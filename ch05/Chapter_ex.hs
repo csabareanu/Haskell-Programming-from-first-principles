@@ -133,3 +133,217 @@
 -- 3. functionS ::
 -- functionS (x, y) = y
 -- functionS :: (a,b) -> b  // snd
+
+
+----------------------------------
+-- Given a type, write the function
+----------------------------------
+
+
+-- You will be shown a type and a function that needs to be written. Use
+-- the information the type provides to determine what the function
+-- should do. We’ll also tell you how many ways there are to write the
+-- function. (Syntactically different but semantically equivalent implementations
+-- are not counted as being different).
+
+
+
+-- 1. There is only one implementation that typechecks.
+-- i :: a -> a
+-- i = undefined
+
+i :: a -> a
+i x = x
+
+
+-- 2. There is only one version that works.
+-- c :: a -> b -> a
+-- c = undefined
+
+c :: a -> b -> a
+c x y = x
+
+
+-- 3. Given alpha equivalence are c” and c (see above) the same thing?
+-- c'' :: b -> a -> b
+-- c'' = ?
+
+c'' :: b -> a -> b
+c'' y x = y
+-- Yes. They are the same thing
+
+
+-- 4. Only one version that works.
+-- c' :: a -> b -> b
+-- c' = undefined
+
+c' :: a -> b -> b
+c' x y = y
+
+
+-- 5. There are multiple possibilities, at least two of which you’ve seen
+-- in previous chapters.
+-- r :: [a] -> [a]
+-- r = undefined
+
+r :: [a] -> [a]
+r x = take 3 x
+
+r' :: [a] -> [a]
+r' x = drop 3 x
+
+
+-- 6. Only one version that will typecheck.
+-- co :: (b -> c) -> (a -> b) -> (a -> c)
+-- co = undefined
+
+-- co f g = \a -> f (g a)
+-- co f g a = f (g a)
+-- co f g a = (f . g) a
+-- co f g = (f . g)
+-- co f g = (.) f g
+-- co = (.)
+co :: (b -> c) -> (a -> b) -> (a -> c)
+co = (.)
+
+
+-- 7. One version will typecheck.
+-- a :: (a -> c) -> a -> a
+-- a = undefined
+
+a :: (a -> c) -> a -> a
+a _ x = x
+
+
+-- 8. One version will typecheck.
+-- a' :: (a -> b) -> a -> b
+-- a' = undefined
+
+a' :: (a -> b) -> a -> b
+a' f x = f x
+
+
+----------------------------------
+-- Fix it
+----------------------------------
+
+
+-- 1. module sing where
+-- fstString :: [Char] ++ [Char]
+-- fstString x = x ++ " in the rain"
+-- sndString :: [Char] -> Char
+-- sndString x = x ++ " over the rainbow"
+-- sing = if (x > y) then fstString x or sndString y
+-- where x = "Singin"
+-- x = "Somewhere"
+
+fstString :: [Char] -> [Char]
+fstString x = x ++ " in the rain"
+
+sndString :: [Char] -> [Char]
+sndString x = x ++ " over the rainbow"
+
+sing = if (x > y)
+    then fstString x
+    else sndString y
+    where x = "Singin"
+
+y = "Somewhere"
+
+
+-- 2. Now that it’s fixed, make a minor change and make it sing the
+-- other song. If you’re lucky, you’ll end up with both songs stuck
+-- in your head!
+
+sing' = if (x < y)
+    then fstString x
+    else sndString y
+    where x = "Singin"
+
+
+-- 3. -- arith3broken.hs
+-- module Arith3Broken where
+-- main :: IO ()
+-- Main = do
+-- print 1 + 2
+-- putStrLn 10
+-- print (negate -1)
+-- print ((+) 0 blah)
+-- where blah = negate 1
+
+-- module Arith3Broken where
+
+main :: IO()
+
+main = do
+    print (1 + 2)
+    putStrLn "10"
+    print (negate (-1))
+    print ((+) 0 blah)
+        where blah = negate 1
+
+
+----------------------------------
+-- Type-Kwon-Do
+----------------------------------
+
+-- 0
+data Woot
+data Blah
+
+f :: Woot -> Blah
+f = undefined
+
+g :: (Blah, Woot) -> (Blah, Blah)
+-- g = ???
+g (b, w) = (b, f w)
+
+
+--1
+f1 :: Int -> String
+f1 = undefined
+
+g1 :: String -> Char
+g1 = undefined
+
+h1 :: Int -> Char
+-- h1 = ???
+h1 = g1 . f1
+
+
+--2
+data A
+data B
+data C
+
+q :: A -> B
+q = undefined
+
+w :: B -> C
+w = undefined
+
+e :: A -> C
+-- e = ???
+e = w . q
+
+
+--3
+data X
+data Y
+data Z
+
+xz :: X -> Z
+xz = undefined
+
+yz :: Y -> Z
+yz = undefined
+
+xform :: (X, Y) -> (Z, Z)
+-- xform = ???
+xform (a, b) = (xz a, yz b)
+
+
+--4
+munge :: (x -> y) -> (y -> (w, z)) -> x -> w
+-- munge = ???
+munge f g x= fst $ (g . f) x
