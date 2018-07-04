@@ -36,3 +36,70 @@ must be added.
 types in Haskell type signatures. Type variables ordinarily will be
 equal to themselves throughout a type signature. Let us consider
 some examples.
+id :: a -> a
+-- One type variable 'a' that occurs twice,
+-- once as an argument, once as a result.
+-- Parametrically polymorphic, could be
+-- strictly anything
+(+) :: Num a => a -> a -> a
+-- One type variable 'a', constrained to needing
+-- an instance of Num. Two arguments, one result.
+-- All the same type.
+
+5. A typeclass is a means of expressing faculties or interfaces that
+multiple datatypes may have in common and then write code
+just in terms of those commonalities without repeating yourself
+for each instance. Just as one may sum values of type Int, Integer,
+Float, Double, and Rational, we can avoid having different (+),
+(*), (-), negate, etc. functions for each by unifying them into
+a single typeclass. Importantly, these can then be used with all
+types that have a Num instance. Thus, a typeclass provides us a
+means to write code in terms of those operators and have our
+functions be compatible with all types that have instances of that
+typeclass, whether they already exist or are yet to be invented
+(by you, perhaps).
+
+6. Parametricity is the property that holds in the presence of parametric
+polymorphism. Parametricity states that the behavior of
+a function will be uniform across all concrete applications of the
+function. Parametricity4 tells us that the function:
+id :: a -> a
+Can be understood to have the same exact behavior for every
+type in Haskell without us needing to see how it was written. It
+is the same property that tells us:
+const :: a -> b -> a
+const must return the first value — parametricity and the definition
+of the type requires it!
+f :: a -> a -> a
+Here, 𝑓 can only return the first or second value, nothing else,
+and it will always return one or the other consistently without
+changing. If the function 𝑓 made use of (+) or (*), its type would
+necessarily be constrained by the typeclass Num and thus be an
+example of ad-hoc, rather than parametric, polymorphism.
+blahFunc :: b -> String
+blahFunc totally ignores its argument and is effectively a constant
+value of type String which requires a throw-away argument
+for no reason.
+convList :: Maybe a -> [a]
+Unless the result is [], the resulting list has values that are all the
+same value.
+
+7. Ad-hoc polymorphism (sometimes called “constrained polymorphism”)
+is polymorphism that applies one or more typeclass
+constraints to what would’ve otherwise been a parametrically
+polymorphic type variable. Here, rather than representing a
+uniformity of behavior across all concrete applications, the purpose
+of ad-hoc polymorphism is to allow the functions to have
+different behavior for each instance. This ad-hoc-ness is constrained
+by the types in the typeclass that defines the methods
+and Haskell’s requirement that typeclass instances be unique
+for a given type. For any given combination of typeclass and a
+type, such as Ord and Bool, there must only exist one unique
+instance in scope. This makes it considerably easier to reason
+about typeclasses. See the example for a disambiguation.
+(+) :: Num a => a -> a -> a
+-- the above function is leveraging
+-- ad-hoc polymorphism via the Num typeclass
+c' :: a -> a -> a
+-- This function is not,
+-- it's parametrically polymorphic in 'a'.
