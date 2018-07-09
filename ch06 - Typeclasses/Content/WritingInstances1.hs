@@ -18,4 +18,4 @@ data Trivial = Trivial'
 
 
 instance Eq Trivial where
-    (==) Trivial' Trivial' = Tru
+    (==) Trivial' Trivial' = True
