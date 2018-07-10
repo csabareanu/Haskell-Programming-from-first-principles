@@ -186,12 +186,16 @@ equalityForall p p' = p == p'
 -- f = 1.0
 -- b) f :: Fractional a => a
 
+-- You can substitue
+
 
 -- 4. Hint for the following: type :info RealFrac in your REPL
 -- a)
 -- f :: Float
 -- f = 1.0
 -- b) f :: RealFrac a => a
+
+-- You can substitute
 
 
 -- 5.
@@ -200,6 +204,7 @@ equalityForall p p' = p == p'
 -- freud x = x
 -- b) freud :: Ord a => a -> a
 
+-- You can substitute
 
 
 -- 6. a)
@@ -207,6 +212,7 @@ equalityForall p p' = p == p'
 -- freud' x = x
 -- b) freud' :: Int -> Int
 
+-- You can substitute
 
 
 -- 7. a)
@@ -215,6 +221,7 @@ equalityForall p p' = p == p'
 -- sigmund x = myX
 -- b) sigmund :: a -> a
 
+-- You cannot substitute . a must be of type Int because myX is of type Int
 
 
 -- 8.
@@ -223,6 +230,8 @@ equalityForall p p' = p == p'
 -- sigmund' x = myX
 -- b) sigmund' :: Num a => a -> a
 
+-- You cannot substitute. a must be of type Int and Num does not imply Int, Int implies Num
+
 
 -- 9.
 -- a) You’ll need to import sort from Data.List .
@@ -230,11 +239,15 @@ equalityForall p p' = p == p'
 -- jung xs = head (sort xs)
 -- b) jung :: [Int] -> Int
 
+-- You can substitute. Int implies Ord
+
 
 -- 10.
 -- a) young :: [Char] -> Char
 -- young xs = head (sort xs)
 -- b) young :: Ord a => [a] -> a
+
+-- You can substitute
 
 
 -- 11.
@@ -244,3 +257,29 @@ equalityForall p p' = p == p'
 -- signifier xs = head (mySort xs)
 -- b)
 -- signifier :: Ord a => [a] -> a
+
+-- You cannot substitute. a must be of type Char
+
+
+-----------------
+-- Type-Kwon-Do
+-----------------
+
+-- Round Two! Same rules apply — you’re trying to fill in terms (code)
+-- which’ll fit the type. The idea with these exercises is that you’ll derive
+-- the implementation from the type information. You’ll probably need
+-- to use stuff from Prelude.
+
+-- 1. chk :: Eq b => (a -> b) -> a -> b -> Bool
+-- chk = ???
+
+chk f x y = f x == y
+
+
+-- 2. -- Hint: use some arithmetic operation to
+-- -- combine values of type 'b'. Pick one.
+-- arith :: Num b => (a -> b) -> Integer -> a -> b
+-- arith = ???
+
+arith :: Num b => (a -> b) -> Integer -> a -> b
+arith f x y = (+) (f y) (fromInteger x)
