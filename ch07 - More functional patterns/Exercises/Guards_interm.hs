@@ -32,26 +32,33 @@ pal xs
 
 -- 4. What types of arguments can pal take?
 
+-- Lists (also Strings)
 
 
 -- 5. What is the type of the function pal?
 
+-- pal :: Eq a => [a] -> Bool
+
 
 -- 6. The following function returns
--- numbers x
--- | x < 0 = -1
--- | x == 0 = 0
--- | x > 0 = 1
+numbers x
+    | x < 0 = -1
+    | x == 0 = 0
+    | x > 0 = 1
 -- a) the value of its argument plus or minus 1
 -- b) the negation of its argument
 -- c) an indication of whether its argument is a positive or negative
 -- number or zero
 -- d) binary machine language
 
+-- c)
 
 
 -- 7. What types of arguments can numbers take?
 
+-- types that have an instance of Num and of Ord
 
 
 -- 8. What is the type of the function numbers?
+
+-- numbers :: (Num a, Ord a, Num b) => a -> b
