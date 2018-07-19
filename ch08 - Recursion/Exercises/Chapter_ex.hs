@@ -1,5 +1,7 @@
 module Chapter_ex where
 
+import Data.List (intercalate)
+
 -------------------
 -- Review of types
 -------------------
@@ -192,19 +194,47 @@ mc91 x
 -- mc91 101
 -- 91
 
-
+----------------------
 -- Numbers into words
+----------------------
+
 -- module WordNumber where
-import Data.List (intersperse)
+
 
 digitToWord :: Int -> String
-digitToWord n = undefined
+-- digitToWord n = undefined
+digitToWord n = intercalate "-" $ map wordNumber $ digits n
+-- or with function composition
+-- digitToWord n = intercalate "-" . map wordNumber $ digits n
 
 digits :: Int -> [Int]
-digits n = undefined
+-- digits n = undefined
+digits 0 = []
+digits n = digits (n `div` 10) ++ [(n `mod` 10)]
+
+-- digits 123
+-- digits 12 ++ [3]
+-- digits 1 ++ [2] ++ [3]
+-- digits 0 ++ [1] ++ [2] ++ [3]
+-- [] ++ [1] ++ [2] ++ [3]
+-- [1, 2, 3]
+
 
 wordNumber :: Int -> String
-wordNumber n = undefined
+-- wordNumber n = undefined
+wordNumber n
+    | n == 0         = "zero"
+    | n == 1         = "one"
+    | n == 2         = "two"
+    | n == 3         = "three"
+    | n == 4         = "four"
+    | n == 5         = "five"
+    | n == 6         = "six"
+    | n == 7         = "seven"
+    | n == 8         = "eight"
+    | n == 9         = "nine"
+    | otherwise = "NaN"
+
 
 -- Here undefined is a placeholder to show you where you need to fill in
 -- the functions. The n to the right of the function names is the argument
