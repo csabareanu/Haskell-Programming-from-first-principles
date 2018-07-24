@@ -1,5 +1,6 @@
 module Chapter_ex where
 import Data.Char
+import Data.Bool
 ---------------
 -- Data.Char
 ---------------
@@ -158,13 +159,23 @@ squishAgain = squishMap id
 -- -- if you have GHC 7.10 or newer. Seeing a pattern?
 myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
 -- myMaximumBy = undefined
-myMaximumBy f (x:xs)
+myMaximumBy _ [x] = x
+myMaximumBy f (x:xs) = if(f x mmb == GT ) then x else mmb
+    where mmb = myMaximumBy f xs
+
 -- Prelude> myMaximumBy (\_ _ -> GT) [1..10]
 -- 1
 -- Prelude> myMaximumBy (\_ _ -> LT) [1..10]
 -- 10
 -- Prelude> myMaximumBy compare [1..10]
 -- 10
+
+
 -- 9. myMinimumBy takes a comparison function and a list and returns
 -- the least element of the list based on the last value that the comparison
 -- returned LT for.
+myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
+-- myMaximumBy = undefined
+myMinimumBy _ [x] = x
+myMinimumBy f (x:xs) = if(f x mmb == LT ) then x else mmb
+    where mmb = myMaximumBy f xs
