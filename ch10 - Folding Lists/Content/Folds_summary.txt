@@ -1,0 +1,37 @@
+Okay, we presented a lot of material in this chapter. You might be
+feeling a little weary of folds right now. So what’s the executive sum-
+mary?
+---------
+foldr
+---------
+
+1. The rest of the fold (recursive invocation of foldr ) is an argu-
+ment to the folding function you passed to foldr . It doesn’t
+directly self-call as a tail-call like foldl . You could think of it
+as alternating between applications of foldr and your folding
+function f . The next invocation of foldr is conditional on f
+having asked for more of the results of having folded the list.
+That is:
+foldr :: (a -> b -> b) -> b -> [a] -> b
+--             ^
+That ‘b’ we’re pointing at in (a -> b -> b) is the rest of the fold.
+Evaluating that evaluates the next application of foldr .
+2. Associates to the right.
+3. Works with infinite lists. We know this because:
+    Prelude> foldr const 0 [1..]
+    1
+4. Is a good default choice whenever you want to transform data
+structures, be they finite or infinite.
+
+-------
+foldl
+-------
+
+1. Self-calls (tail-call) through the list, only beginning to produce
+values after it’s reached the end of the list.
+2. Associates to the left.
+3. Cannot be used with infinite lists. Try the infinite list example
+earlier and your REPL will hang.
+4. Is nearly useless and should almost always be replaced with
+foldl' for reasons we’ll explain later when we talk about writing
+efficient Haskell programs.
