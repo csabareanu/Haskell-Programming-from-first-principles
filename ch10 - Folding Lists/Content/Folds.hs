@@ -23,6 +23,11 @@ product_rec (x:xs) = x * product_rec xs
 -- foldr f acc [] = acc
 -- foldr f acc (x:xs) = f x (foldr f acc xs)
 
+-- foldl :: (b -> a -> b) -> b -> [a] -> b
+-- foldl f acc [] = acc
+-- foldl f acc (x:xs) = foldl f (f acc x) xs
+
+
 -- The similarities between this and the recursive patterns we saw above
 -- should be clear. The “rest of the fold,” (foldr f acc xs) is an argu-
 -- ment to the function f we’re folding with. The acc is the accumulator,
@@ -30,3 +35,26 @@ product_rec (x:xs) = x * product_rec xs
 -- the empty list case and a second argument to begin our fold with. The
 -- accumulator is often the identity for whatever function we’re folding
 -- with, such as 0 for (+) and 1 for (*) .
+
+-- foldl begins its reduction process by adding the acc value to the head of the list,
+-- while foldr has added it to the final element of the list first
+
+-- we can use scans to see how a fold evaluates (scanr, scanl)
+-- Prelude> foldr (+) 0 [1..5]
+-- 15
+-- Prelude> scanr (+) 0 [1..5]
+-- [15,14,12,9,5,0]
+
+-- if you want to follow along,
+-- use paper and not the REPL.
+-- foldr (^) 2 [1..3]
+-- (1 ^ (2 ^ (3 ^ 2)))
+-- (1 ^ (2 ^ 9))
+-- 1 ^ 512
+-- 1
+-- Contrast that with this:
+-- foldl (^) 2 [1..3]
+-- ((2 ^ 1) ^ 2) ^ 3
+-- (2 ^ 2) ^ 3
+-- 4 ^ 3
+-- 64
