@@ -1,5 +1,7 @@
 module Chapter_ex where
 
+import Data.Bool
+
 ------------------------
 -- Warm-up and review
 ------------------------
@@ -118,41 +120,67 @@ myOr = foldr (||) False
 
 -- 2. myAny returns True if a -> Bool applied to any of the values in
 -- the list returns True.
---myAny :: (a -> Bool) -> [a] -> Bool
+myAny :: (a -> Bool) -> [a] -> Bool
 -- myAny = undefined
--- myAny f = myOr . f . foldr f []
-
--- So, I must apply the function f to any element of my list and if one value returned is True, returns True, else False.
+-- with map
+myAny f = myOr . map f
+-- only with fold
+myAny' :: (a -> Bool) -> [a] -> Bool
+myAny' f = foldr (\x y -> if f x then True else y) False
+-- or :
+myAny'' :: (a -> Bool) -> [a] -> Bool
+myAny'' f = foldr ((||).f) False
 -- Example for validating myAny:
 -- Prelude> myAny even [1, 3, 5]
 -- False
 -- Prelude> myAny odd [1, 3, 5]
 -- True
+
+
 -- 3. In addition to the recursive and fold based myElem, write a version
 -- that uses any.
--- myElem :: Eq a => a -> [a] -> Bool
+myElem :: Eq a => a -> [a] -> Bool
+myElem x = foldr ((||).(== x)) False
+
+myElemAny :: Eq a => a -> [a] -> Bool
+myElemAny x = myAny'' (==x)
 -- Prelude> myElem 1 [1..10]
 -- True
 -- Prelude> myElem 1 [2..10]
 -- False
+
+
 -- 4. Implement myReverse, don’t worry about trying to make it lazy.
--- myReverse :: [a] -> [a]
+myReverse :: [a] -> [a]
 -- myReverse = undefined
+myReverse = foldl (flip (:)) []
+
 -- Prelude> myReverse "blah"
 -- "halb"
 -- Prelude> myReverse [1..5]
 -- [5,4,3,2,1]
+
+
 -- 5. Write myMap in terms of foldr. It should have the same behavior
 -- as the built-in map.
--- myMap :: (a -> b) -> [a] -> [b]
+myMap :: (a -> b) -> [a] -> [b]
 -- myMap = undefined
+myMap f = foldr ((:) . f) []
+
 -- 6. Write myFilter in terms of foldr. It should have the same
 -- behavior as the built-in filter.
--- myFilter :: (a -> Bool) -> [a] -> [a]
+myFilter :: (a -> Bool) -> [a] -> [a]
 -- myFilter = undefined
+myFilter f = foldr (\a b -> if f a then a : b else b) []
+
+myFilter' :: (a -> Bool) -> [a] -> [a]
+myFilter' f = foldr (\a b -> bool b (a : b) (f a)) []
+
+
 -- 7. squish flattens a list of lists into a list
 -- squish :: [[a]] -> [a]
--- squish = undefined
+-- -- squish = undefined
+-- squish
 -- 8. squishMap maps a function over a list and concatenates the results.
 -- squishMap :: (a -> [b]) -> [a] -> [b]
 -- squishMap = undefined
