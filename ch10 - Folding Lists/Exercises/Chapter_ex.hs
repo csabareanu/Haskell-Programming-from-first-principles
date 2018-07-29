@@ -178,36 +178,51 @@ myFilter' f = foldr (\a b -> bool b (a : b) (f a)) []
 
 
 -- 7. squish flattens a list of lists into a list
--- squish :: [[a]] -> [a]
+squish :: [[a]] -> [a]
 -- -- squish = undefined
--- squish
+squish = foldr ((++)) []
+
+
 -- 8. squishMap maps a function over a list and concatenates the results.
--- squishMap :: (a -> [b]) -> [a] -> [b]
+squishMap :: (a -> [b]) -> [a] -> [b]
 -- squishMap = undefined
+squishMap f = foldr ((++) . f) []
+
 -- Prelude> squishMap (\x -> [1, x, 3]) [2]
 -- [1,2,3]
 -- Prelude> squishMap (\x -> "WO " ++ [x] ++ " OT ") "blah"
 -- "WO b OT WO l OT WO a OT WO h OT "
+
+
 -- 9. squishAgain flattens a list of lists into a list. This time re-use
 -- the squishMap function.
--- squishAgain :: [[a]] -> [a]
+squishAgain :: [[a]] -> [a]
 -- squishAgain = undefined
+squishAgain = squishMap id
+
+
 -- 10. myMaximumBy takes a comparison function and a list and returns
 -- the greatest element of the list based on the last value that the
 -- comparison returned GT for.
--- myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
+myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
 -- myMaximumBy = undefined
+myMaximumBy f (x:xs) = foldl (\a b -> if f a b == GT then a else b) x xs
+
 -- Prelude> myMaximumBy (\_ _ -> GT) [1..10]
 -- 1
 -- Prelude> myMaximumBy (\_ _ -> LT) [1..10]
 -- 10
 -- Prelude> myMaximumBy compare [1..10]
 -- 10
+
+
 -- 11. myMinimumBy takes a comparison function and a list and returns
 -- the least element of the list based on the last value that the comparison
 -- returned LT for.
--- myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
+myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
 -- myMinimumBy = undefined
+myMinimumBy f (x:xs) = foldl (\a b -> if f a b == LT then a else b) x xs
+
 -- Prelude> myMinimumBy (\_ _ -> GT) [1..10]
 -- 10
 -- Prelude> myMinimumBy (\_ _ -> LT) [1..10]
