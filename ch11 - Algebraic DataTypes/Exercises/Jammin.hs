@@ -61,6 +61,8 @@ sumJars = sum . map nr
 -- *Jammin> mostRow
 -- Jam {fruit = Apple, jars = 10}
 
+mostRow :: [JamJars] -> JamJars
+mostRow (x : xs) = foldr (\a b -> if (nr a > nr b) then a else b) x xs
 
 -- 8. Under your module name, import the module called Data.List.
 -- It includes some standard functions called sortBy and groupBy
