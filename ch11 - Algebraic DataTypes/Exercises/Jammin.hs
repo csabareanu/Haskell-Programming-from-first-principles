@@ -1,5 +1,7 @@
 module Jammin where
 
+import Data.List
+
 
 -- Here we’ve started working on datatypes to keep track of Julie’s homemade
 -- jam output, with an Int value to represent how many jars she’s
@@ -69,10 +71,24 @@ mostRow (x : xs) = foldr (\a b -> if (nr a > nr b) then a else b) x xs
 -- that will allow us to organize our list of jams. Look at their type
 -- signatures because there are some important differences between
 -- them.
+-- *Jammin> :t sortBy
+-- sortBy :: (a -> a -> Ordering) -> [a] -> [a]
+-- *Jammin> :t groupBy
+-- groupBy :: (a -> a -> Bool) -> [a] -> [[a]]
+
+
 -- 9. You’ll want to sort the list allJams by the first field in each record.
 -- You may (or may not) want to use the following helper function
 -- as part of that:
--- compareKind (Jam k _) (Jam k' _) = compare k k'
+compareKind (Jam k _) (Jam k' _) = compare k k'
+
+sortedJamsName :: [JamJars]
+sortedJamsName = sortBy compareKind allJam
+
+sortedJamsQuantity :: [JamJars]
+sortedJamsQuantity = sortBy (\(Jam _ k) (Jam _ k') -> compare k k') allJam
+
+
 -- 10. Now take the sorting function and use groupBy to group the
 -- jams by the type of fruit they are made from. You’ll later want
 -- the ability to sum the sublists separately, so you’re looking for a
@@ -86,3 +102,6 @@ mostRow (x : xs) = foldr (\a b -> if (nr a > nr b) then a else b) x xs
 -- , [ Jam {fruit = Apple, jars = 10} ]
 -- , [ Jam {fruit = Blackberry, jars = 7}
 -- , Jam {fruit = Blackberry, jars = 4} ] ]
+
+groupedJamsName :: [[JamJars]]
+groupedJamsName = groupBy (\(Jam _ k) (Jam _ k') -> k == k') allJam
