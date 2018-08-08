@@ -40,8 +40,8 @@ newtype NumSheep =
 data BigFarmhouse =
     BigFarmhouse NumCow NumPig NumSheep
 
--- data BigFarmhouse' =
---     Product NumCow (Product NumPig NumSheep)
+type BigFarmhouse' =
+    Product NumCow (Product NumPig NumSheep)
 
 type Name = String
 type Age = Int
@@ -74,3 +74,16 @@ data Animal =
 -- Alternately
 type Animal' =
     Sum CowInfo (Sum PigInfo SheepInfo)
+
+
+
+--Constructing values
+
+trivialValue :: GuessWhat
+trivialValue = Chickenbutt
+
+idInt :: Id Integer
+idInt = MkId 10
+
+idIdentity :: Id (a->a)
+idIdentity = MkId $ \x -> x
