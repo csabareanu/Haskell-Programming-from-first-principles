@@ -23,12 +23,12 @@ data Weekday =
 
 
 -- 2. and with the same datatype definition in mind, what is the type
--- of the following function, f?
-f Friday = "Miller Time"
--- a) f :: [Char]
--- b) f :: String -> String
--- c) f :: Weekday -> String
--- d) f :: Day -> Beer
+-- of the following function, ff?
+ff Friday = "Miller Time"
+-- a) ff :: [Char]
+-- b) ff :: String -> String
+-- c) ff :: Weekday -> String
+-- d) ff :: Day -> Beer
 
 -- c)
 
@@ -102,7 +102,10 @@ mapKeyword _  []     = []
 mapKeyword ks (x:xs) = take x ks ++ " " ++ mapKeyword (drop x ks) xs
 
 vigenere :: [Char] -> [Char] -> [Char]
-vigenere k m = zipWith (\a b -> if a /= ' ' then (shiftRight (encode a) b) else ' ')  (mapKeyword (cycle k) . charsPerWord $m) m
+vigenere k m =
+    zipWith (\a b -> if a /= ' ' then (shiftRight (encode a) b) else ' ')
+    (mapKeyword (cycle k) . charsPerWord $m)
+    m
 
 keyword = "ally"
 message = "meet at dawn"
@@ -123,10 +126,10 @@ testCypher =
 -- “As-patterns” in Haskell are a nifty way to be able to pattern match on
 -- part of something and still refer to the entire original value. Some
 -- examples:
--- f :: Show a => (a, b) -> IO (a, b)
--- f t@(a, _) = do
--- print a
--- return t
+f :: Show a => (a, b) -> IO (a, b)
+f t@(a, _) = do
+    print a
+    return t
 -- Here we pattern-matched on a tuple so we could get at the first value
 -- for printing, but used the @ symbol to introduce a binding named t
 -- in order to refer to the whole tuple rather than just a part.
@@ -146,10 +149,26 @@ testCypher =
 -- [1,1,2]
 -- Prelude> doubleUp [1, 2, 3]
 -- [1,1,2,3]
+
 -- Use as-patterns in implementing the following functions:
 -- 1. This should return True if (and only if) all the values in the first
--- list appear in the second list, though they need not be contiguous.
--- isSubsequenceOf :: (Eq a) => [a] -> [a] -> Bool
+-- list appear in the second list, though they need not be contiguous
+
+-- double foldr. Not using x,xs,l,ls, only t and u
+isSubsequenceOf :: (Eq a) => [a] -> [a] -> Bool
+isSubsequenceOf t@(x:xs) u@(l:ls) =
+    foldr (\c d -> if (foldr (\a b -> if c == a then True else b)
+                             False
+                             u)
+                             then d else False)
+          True
+          t
+
+
+isSubsequenceOf' :: (Eq a) => [a] -> [a] -> Bool
+isSubsequenceOf' [] _ = True
+isSubsequenceOf' (x:xs) l = elem x l && isSubsequenceOf' xs l
+
 -- The following are examples of how this function should work:
 -- Prelude> isSubsequenceOf "blah" "blahwoot"
 -- True
@@ -159,8 +178,14 @@ testCypher =
 -- True
 -- Prelude> isSubsequenceOf "blah" "wootbla"
 -- False
+
+
 -- 2. Split a sentence into words, then tuple each word with the capitalized
 -- form of each.
--- capitalizeWords :: String -> [(String, String)]
+capitalizeWords :: String -> [(String, String)]
+capitalizeWords = map capitalize . words
+    where capitalize []       = ([], [])
+          capitalize s@(x:xs) = (s, toUpper x:xs)
+
 -- Prelude> capitalizeWords "hello world"
 -- [("hello", "Hello"), ("world", "World")]
