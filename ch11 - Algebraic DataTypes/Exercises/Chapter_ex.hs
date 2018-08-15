@@ -97,30 +97,22 @@ shift f x y = decode $ mod (f (encode y) x) 26
 charsPerWord :: [Char] -> [Int]
 charsPerWord = map length . words
 
-mapKeyword :: [Int] -> [Char] -> [Char]
-mapKeyword x k =
-    mapK []     _  = []
-    mapK (x:xs) kw = take x ks : mapK xs (drop (x+1) ks)
-    where
-        ks = cycle kw
+mapKeyword :: [Char] -> [Int] -> [Char]
+mapKeyword _  []     = []
+mapKeyword ks (x:xs) = take x ks ++ " " ++ mapKeyword (drop x ks) xs
 
-
-
-
-
--- vigenere :: [Char] -> [Char] -> [Char]
--- vigenere k =
---     map (shiftRight )
+vigenere :: [Char] -> [Char] -> [Char]
+vigenere k m = zipWith (\a b -> if a /= ' ' then (shiftRight (encode a) b) else ' ')  (mapKeyword (cycle k) . charsPerWord $m) m
 
 keyword = "ally"
-message = "meet me at dawn"
+message = "meet at dawn"
 
 encodedMessage = "mppr ae oywy"
 
--- testCypher =
---     if vigenere message == encodedMessage
---         then print "Coorect"
---         else error "Not Correct"
+testCypher =
+    if vigenere keyword message == encodedMessage
+        then print "Coorect"
+        else error "Not Correct"
 
 ----------------
 -- As-patterns
