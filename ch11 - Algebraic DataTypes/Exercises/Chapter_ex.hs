@@ -97,8 +97,16 @@ shift f x y = decode $ mod (f (encode y) x) 26
 charsPerWord :: [Char] -> [Int]
 charsPerWord = map length . words
 
-mapKeyword :: [Char] -> [Char] -> [Char]
-mapKeyword k m = charsPerWord m
+mapKeyword :: [Int] -> [Char] -> [Char]
+mapKeyword x k =
+    mapK []     _  = []
+    mapK (x:xs) kw = take x ks : mapK xs (drop (x+1) ks)
+    where
+        ks = cycle kw
+
+
+
+
 
 -- vigenere :: [Char] -> [Char] -> [Char]
 -- vigenere k =
