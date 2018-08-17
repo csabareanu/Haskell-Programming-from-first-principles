@@ -1,6 +1,7 @@
 module Chapter_ex where
 
 import Data.Char
+import Data.List
 
 -------------------
 -- Multiple choice
@@ -267,6 +268,8 @@ capitalizeParagraph = newSentence True
 -- functions in the following exercises.
 -- -- fill in the rest.
 type Digit = Char
+-- Valid presses: 1 and up
+type Presses = Int
 
 data DaPhone = DaPhone [(Digit, [Digit])]
 
@@ -289,30 +292,37 @@ phone = DaPhone [('1', "1")
 -- to express them. We’re going to suggest types and functions to
 -- fill in order to accomplish the goal, but they’re not obligatory. If
 -- you want to do it differently…you do you.
--- convo :: [String]
--- convo =
--- ["Wanna play 20 questions",
--- "Ya",
--- "U 1st haha",
--- "Lol ok. Have u ever tasted alcohol lol",
--- "Lol ya",
--- "Wow ur cool haha. Ur turn",
--- "Ok. Do u think I am pretty Lol",
--- "Lol ya",
--- "Haha thanks just making sure rofl ur turn"]
--- -- validButtons = "1234567890*#"
--- type Digit = Char
--- -- Valid presses: 1 and up
--- type Presses = Int
--- reverseTaps :: DaPhone -> Char -> [(Digit, Presses)]
--- reverseTaps = undefined
+convo :: [[Char]] --[Char] = String
+convo =
+    ["Wanna play 20 questions",
+    "Ya",
+    "U 1st haha",
+    "Lol ok. Have u ever tasted alcohol lol",
+    "Lol ya",
+    "Wow ur cool haha. Ur turn",
+    "Ok. Do u think I am pretty Lol",
+    "Lol ya",
+    "Haha thanks just making sure rofl ur turn"]
+
+-- validButtons = "1234567890*#"
+
+reverseTaps :: DaPhone -> Char -> [(Digit, Presses)]
+reverseTaps (DaPhone p) s
+    | isUpper s  =  [('*', 1), presses p]
+    | otherwise  =  [presses p]
+    where
+        presses []                      = ('#', 2)
+        presses (x:xs)
+            | elem  (toLower s) (snd x) = (fst x, foldr (\a b -> if a/=s then (-) b 1 else b) (length (snd x)) (snd x))
+            | otherwise                 = presses xs
+
 -- -- assuming the default phone definition
 -- -- 'a' -> ('2', 1)
 -- -- 'A' -> [('*', 1), ('2', 1)]
--- cellPhonesDead :: DaPhone
--- -> String
--- -> [(Digit, Presses)]
--- cellPhonesDead = undefined
+cellPhonesDead :: DaPhone -> String -> [(Digit, Presses)]
+cellPhonesDead = undefined
+
+
 -- 3. How many times do digits need to be pressed for each message?
 -- fingerTaps :: [(Digit, Presses)] -> Presses
 -- fingerTaps = undefined
