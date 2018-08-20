@@ -292,7 +292,7 @@ phone = DaPhone [('1', "1")
 -- to express them. We’re going to suggest types and functions to
 -- fill in order to accomplish the goal, but they’re not obligatory. If
 -- you want to do it differently…you do you.
-convo :: [[Char]] --[Char] = String
+convo :: [String] --[Char] = String
 convo =
     ["Wanna play 20 questions",
     "Ya",
@@ -313,25 +313,47 @@ reverseTaps (DaPhone p) s
     where
         presses []                      = ('#', 2)
         presses (x:xs)
-            | elem  (toLower s) (snd x) = (fst x, foldr (\a b -> if a/=s then (-) b 1 else b) (length (snd x)) (snd x))
+            | s == ' '                  = ('0', 1)
+            | elem  (toLower s) (snd x) = (fst x, indexOf (toLower s) (snd x) 1)
             | otherwise                 = presses xs
+
+        indexOf t (y:ys) i
+            | t == y    = i
+            | otherwise = indexOf t ys (i+1)
 
 -- -- assuming the default phone definition
 -- -- 'a' -> ('2', 1)
 -- -- 'A' -> [('*', 1), ('2', 1)]
 cellPhonesDead :: DaPhone -> String -> [(Digit, Presses)]
-cellPhonesDead = undefined
+cellPhonesDead p = foldr (\a b -> reverseTaps p a ++ b) []
+
+mess :: [(Digit, Presses)]
+mess = cellPhonesDead phone (convo !! 0)
 
 
 -- 3. How many times do digits need to be pressed for each message?
--- fingerTaps :: [(Digit, Presses)] -> Presses
--- fingerTaps = undefined
+fingerTaps :: [(Digit, Presses)] -> Presses
+fingerTaps = foldr (\a b -> snd a + b) 0
+
+
 -- 4. What was the most popular letter for each message? What was
 -- its cost? You’ll want to combine reverseTaps and fingerTaps
 -- to figure out what it cost in taps. reverseTaps is a list because
 -- you need to press a different button in order to get capitals.
--- mostPopularLetter :: String -> Char
--- mostPopularLetter = undefined
+mostPopularLetter :: String -> Char
+mostPopularLetter s = foldr (\a b -> if (countLetters a s > countLetters b s) then a else b)
+                      (head s)
+                      (removeDuplicates s)
+        where
+            countLetters :: Char -> String -> Int
+            countLetters c = foldr (\a b -> if a == c then b + 1 else b) 0
+
+            removeDuplicates :: String -> String
+            removeDuplicates = foldr (\a b -> if (elem a b) then b else a:b) ""
+
+
+--costLetter :: Presses
+costLetter s = fingerTaps . reverseTaps phone s
 -- 5. What was the most popular letter overall? What was the most
 -- popular word?
 -- coolestLtr :: [String] -> Char
