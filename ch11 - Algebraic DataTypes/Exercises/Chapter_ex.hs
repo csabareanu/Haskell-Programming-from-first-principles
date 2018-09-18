@@ -340,16 +340,26 @@ fingerTaps = foldr (\a b -> snd a + b) 0
 -- its cost? You’ll want to combine reverseTaps and fingerTaps
 -- to figure out what it cost in taps. reverseTaps is a list because
 -- you need to press a different button in order to get capitals.
+
+-- does not count white space and other punctuation (not all) and is case insensitive
 mostPopularLetter :: String -> Char
 mostPopularLetter s = foldr (\a b -> if (countLetters a s > countLetters b s) then a else b)
                       (head s)
-                      (removeDuplicates s)
+                      (allLowerCase . removePunctuation . removeDuplicates $s)
         where
             countLetters :: Char -> String -> Int
-            countLetters c = foldr (\a b -> if a == c then b + 1 else b) 0
+            countLetters c = foldr (\a b -> if toLower a == c then b + 1 else b) 0
 
             removeDuplicates :: String -> String
             removeDuplicates = foldr (\a b -> if (elem a b) then b else a:b) ""
+
+            removePunctuation :: String -> String
+            removePunctuation [] = ""
+            removePunctuation (x:xs) = if(elem x " .,?!;") then removePunctuation xs else x:removePunctuation xs
+
+            allLowerCase :: String -> String
+            allLowerCase [] = ""
+            allLowerCase (x:xs) = toLower x : allLowerCase xs
 
 
 costLetter :: Char -> Presses
@@ -359,9 +369,30 @@ costLetter = fingerTaps . reverseTaps phone
 -- popular word?
 
 coolestLtr :: [String] -> Char
--- coolestLtr = undefined
--- coolestWord :: [String] -> String
--- coolestWord = undefined
+coolestLtr sl = mostPopularLetter . unwords $ sl
+
+
+coolestWord :: [String] -> String
+coolestWord s = foldr (\a b -> if (countWords a wordList > countWords b wordList) then a else b)
+                      (head wordList)
+                      (removeDuplicates wordList)
+            where
+                countWords :: String -> [String] -> Int
+                countWords c = foldr (\a b -> if a == c then b + 1 else b) 0
+
+                removeDuplicates :: [String] -> [String]
+                removeDuplicates = foldr (\a b -> if (elem a b) then b else a:b) []
+
+                removePunctuation :: String -> String
+                removePunctuation [] = ""
+                removePunctuation (x:xs) = if(elem x ".,?!;") then ' ':removePunctuation xs else x:removePunctuation xs
+
+                allLowerCase :: String -> String
+                allLowerCase [] = ""
+                allLowerCase (x:xs) = toLower x : allLowerCase xs
+
+                wordList :: [String]
+                wordList = words . allLowerCase . removePunctuation . unwords $ s
 
 
 ------------------
