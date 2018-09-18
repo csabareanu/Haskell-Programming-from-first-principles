@@ -352,11 +352,13 @@ mostPopularLetter s = foldr (\a b -> if (countLetters a s > countLetters b s) th
             removeDuplicates = foldr (\a b -> if (elem a b) then b else a:b) ""
 
 
---costLetter :: Presses
-costLetter s = fingerTaps . reverseTaps phone s
+costLetter :: Char -> Presses
+costLetter = fingerTaps . reverseTaps phone
+
 -- 5. What was the most popular letter overall? What was the most
 -- popular word?
--- coolestLtr :: [String] -> Char
+
+coolestLtr :: [String] -> Char
 -- coolestLtr = undefined
 -- coolestWord :: [String] -> String
 -- coolestWord = undefined
