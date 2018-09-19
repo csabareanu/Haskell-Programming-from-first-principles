@@ -302,7 +302,7 @@ convo =
     "Wow ur cool haha. Ur turn",
     "Ok. Do u think I am pretty Lol",
     "Lol ya",
-    "Haha thanks just making sure rofl ur turn"]
+    "Haha thanks just making sure rofl ur turn "]
 
 -- validButtons = "1234567890*#"
 
@@ -410,17 +410,26 @@ coolestWord s = foldr (\a b -> if (countWords a wordList > countWords b wordList
 -- doing most of the time while programming anyway.
 -- 1. Your first task is to write the “eval” function which reduces an
 -- expression to a final sum.
--- data Expr
--- = Lit Integer
--- | Add Expr Expr
--- eval :: Expr -> Integer
--- eval = error "do it to it"
+data Expr
+     = Lit Integer
+      | Add Expr Expr
+eval :: Expr -> Integer
+--eval = error "do it to it"
+-- eval (Add (Lit x) (Lit y)) = x + y
+-- eval (Add t@(Add x z) (Lit y)) = y + eval t
+-- eval (Add (Lit y) t@(Add x z)) = y + eval t
+-- eval (Add t@(Add u v) s@(Add x y)) = eval t + eval s
+eval (Lit a)   = a
+eval (Add a b) = eval a + eval b
+
+
 -- Example of expected output:
 -- Prelude> eval (Add (Lit 1) (Lit 9001))
 -- 9002
 -- 2. Write a printer for the expressions.
--- printExpr :: Expr -> String
--- printExpr = undefined
+printExpr :: Expr -> String
+printExpr (Lit a)   = show a
+printExpr (Add a b) = printExpr a ++ " + " ++ printExpr b
 -- Expected output:
 -- Prelude> printExpr (Add (Lit 1) (Lit 9001))
 -- "1 + 9001"
