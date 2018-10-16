@@ -13,6 +13,7 @@ module Chapter_ex where
 
 -- 2. r :: a -> f a
 -- What are the kinds of a and f?
+-- * and * -> *
 
 
 ---------------------
@@ -32,12 +33,17 @@ module Chapter_ex where
 -- -- Just "blahtheblah"
 -- -- >>> notThe "woot"
 -- -- Just "woot"
--- notThe :: String -> Maybe String
--- notThe = undefined
+notThe :: String -> Maybe String
+notThe s
+    | s == "the" = Nothing
+    | otherwise  = Just s
+
 -- -- >>> replaceThe "the cow loves us"
 -- -- "a cow loves us"
--- replaceThe :: String -> String
--- replaceThe = undefined
+replaceThe :: String -> String
+replaceThe = unwords . map (r . notThe) . words
+    where r (Just a) = a
+          r Nothing  = "a"
 
 
 
