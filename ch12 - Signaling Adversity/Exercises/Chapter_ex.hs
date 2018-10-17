@@ -46,7 +46,6 @@ replaceThe = unwords . map (r . notThe) . words
           r Nothing  = "a"
 
 
-
 -- 2. Write a recursive function that takes a text/string, breaks it into
 -- words, and counts the number of instances of ”the” followed by
 -- a vowel-initial word.
@@ -54,9 +53,13 @@ replaceThe = unwords . map (r . notThe) . words
 -- -- 0
 -- -- >>> countTheBeforeVowel "the evil cow"
 -- -- 1
--- countTheBeforeVowel :: String -> Integer
--- countTheBeforeVowel = undefined
+isVowel :: Char -> Bool
+isVowel c = elem c vowels
+    where vowels = "aeiou"
 
+-- countTheBeforeVowel :: String -> Integer
+-- countTheBeforeVowel = foldl (\x y -> if (notThe x /= Nothing && isVowel (take 1 y)) then ) . words
+--     where isVowe
 
 
 -- 3. Return the number of letters that are vowels in a word.
