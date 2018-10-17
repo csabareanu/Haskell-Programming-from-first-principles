@@ -1,5 +1,7 @@
 module Chapter_ex where
 
+import Data.Char
+
 -----------------------
 -- Determine the kinds
 -----------------------
@@ -54,12 +56,17 @@ replaceThe = unwords . map (r . notThe) . words
 -- -- >>> countTheBeforeVowel "the evil cow"
 -- -- 1
 isVowel :: Char -> Bool
-isVowel c = elem c vowels
+isVowel = (`elem` vowels) . toLower
     where vowels = "aeiou"
 
--- countTheBeforeVowel :: String -> Integer
--- countTheBeforeVowel = foldl (\x y -> if (notThe x /= Nothing && isVowel (take 1 y)) then ) . words
---     where isVowe
+countTheBeforeVowel :: String -> Integer
+countTheBeforeVowel = cnt . map notThe . words
+    where
+        cnt :: [Maybe String] -> Integer
+        cnt []                   = 0
+        cnt (Nothing:Just (ch:_) : xs)
+            | isVowel ch               = 1 + cnt xs
+        cnt ( _ : xs)                  = cnt xs
 
 
 -- 3. Return the number of letters that are vowels in a word.
@@ -72,8 +79,8 @@ isVowel c = elem c vowels
 -- -- 2
 -- -- >>> countVowels "Mikolajczak"
 -- -- 4
--- countVowels :: String -> Integer
--- countVowels = undefined
+countVowels :: String -> Integer
+countVowels = toInteger . length . filter isVowel
 
 
 
@@ -87,12 +94,16 @@ isVowel c = elem c vowels
 -- Nothing. In many human languages, vowels rarely exceed the number
 -- of consonants so when they do, it indicates the input isn’t a real word
 -- (that is, a valid input to your dataset):
--- newtype Word' =
--- Word' String
--- deriving (Eq, Show)
--- vowels = "aeiou"
--- mkWord :: String -> Maybe Word'
--- mkWord = undefined
+
+newtype Word' =
+    Word' String
+    deriving (Eq, Show)
+
+mkWord :: String -> Maybe Word'
+mkWord w = if(countVowels w > countCons) then Nothing else Just (Word' w)
+    where
+        countCons :: Integer
+        countCons = (-) (toInteger . length $w) (countVowels w)
 
 
 
