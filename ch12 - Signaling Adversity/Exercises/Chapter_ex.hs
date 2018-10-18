@@ -121,18 +121,19 @@ mkWord w = if(countVowels w > countCons) then Nothing else Just (Word' w)
 -- Integer, but the same is not true of any Integer. Negative numbers are
 -- not valid natural numbers.
 -- -- As natural as any competitive bodybuilder
--- data Nat =
--- Zero
----- | Succ Nat
--- deriving (Eq, Show)
+data Nat =
+    Zero
+    | Succ Nat
+    deriving (Eq, Show)
 -- -- >>> natToInteger Zero
 -- -- 0
 -- -- >>> natToInteger (Succ Zero)
 -- -- 1
 -- -- >>> natToInteger (Succ (Succ Zero))
 -- -- 2
--- natToInteger :: Nat -> Integer
--- natToInteger = undefined
+natToInteger :: Nat -> Integer
+natToInteger Zero     = 0
+natToInteger (Succ x) = 1 + natToInteger x
 -- -- >>> integerToNat 0
 -- -- Just Zero
 -- -- >>> integerToNat 1
@@ -141,8 +142,13 @@ mkWord w = if(countVowels w > countCons) then Nothing else Just (Word' w)
 -- -- Just (Succ (Succ Zero))
 -- -- >>> integerToNat (-1)
 -- -- Nothing
--- integerToNat :: Integer -> Maybe Nat
--- integerToNat = undefined
+integerToNat :: Integer -> Maybe Nat
+integerToNat n
+    | n < 0     = Nothing
+    | otherwise = Just $ go n
+    where
+        go 0 = Zero
+        go n = Succ $ go (n - 1)
 
 
 ---------------------------
@@ -156,50 +162,86 @@ mkWord w = if(countVowels w > countCons) then Nothing else Just (Word' w)
 -- -- True
 -- -- >>> isJust Nothing
 -- -- False
--- isJust :: Maybe a -> Bool
+isJust :: Maybe a -> Bool
+isJust (Just _) = True
+isJust _        = False
+
+
 -- -- >>> isNothing (Just 1)
 -- -- False
 -- -- >>> isNothing Nothing
 -- -- True
--- isNothing :: Maybe a -> Bool
+isNothing :: Maybe a -> Bool
+isNothing = not . isJust
+
+
 -- 2. The following is the Maybe catamorphism. You can turn a Maybe
 -- value into anything else with this.
 -- -- >>> mayybee 0 (+1) Nothing
 -- -- 0
 -- -- >>> mayybee 0 (+1) (Just 1)
 -- -- 2
--- mayybee :: b -> (a -> b) -> Maybe a -> b
+mayybee :: b -> (a -> b) -> Maybe a -> b
+mayybee _ f (Just x) = f x
+mayybee y _ _        = y
+
 -- 3. In case you just want to provide a fallback value.
 -- -- >>> fromMaybe 0 Nothing
 -- -- 0
 -- -- >>> fromMaybe 0 (Just 1)
 -- -- 1
--- fromMaybe :: a -> Maybe a -> a
+fromMaybe :: a -> Maybe a -> a
+fromMaybe x Nothing = mayybee x id Nothing
+fromMaybe x z       = mayybee x id z
+
+-- and using flip - the first to args flipped
+fromMaybe' :: a -> Maybe a -> a
+fromMaybe' = flip mayybee id
 -- -- Try writing it in terms of the maybe catamorphism
+
+
 -- 4. Converting between List and Maybe.
 -- -- >>> listToMaybe [1, 2, 3]
 -- -- Just 1
 -- -- >>> listToMaybe []
 -- -- Nothing
--- listToMaybe :: [a] -> Maybe a
+listToMaybe :: [a] -> Maybe a
+listToMaybe []     = Nothing
+listToMaybe (x:_) = Just x
+
 -- -- >>> maybeToList (Just 1)
 -- -- [1]
 -- -- >>> maybeToList Nothing
 -- -- []
--- maybeToList :: Maybe a -> [a]
+maybeToList :: Maybe a -> [a]
+maybeToList = mayybee [] (:[])
+
 -- 5. For when we just want to drop the Nothing values from our list.
 -- -- >>> catMaybes [Just 1, Nothing, Just 2]
 -- -- [1, 2]
 -- -- >>> catMaybes [Nothing, Nothing, Nothing]
 -- -- []
--- catMaybes :: [Maybe a] -> [a]
+catMaybes :: [Maybe a] -> [a]
+catMaybes = foldr (\a b -> maybeToList a ++ b) []
+
 -- 6. You’ll see this called “sequence” later.
 -- -- >>> flipMaybe [Just 1, Just 2, Just 3]
 -- -- Just [1, 2, 3]
 -- -- >>> flipMaybe [Just 1, Nothing, Just 3]
 -- -- Nothing
--- flipMaybe :: [Maybe a] -> Maybe [a]
+flipMaybe :: [Maybe a] -> Maybe [a]
+flipMaybe [] = Just []
+flipMaybe (Nothing: xs) = Nothing
+flipMaybe (Just x: xs) = mayybee Nothing (Just . (x:)) $ flipMaybe xs
 
+-- flipMaybe [Just 1, Just 2, Just 3]
+-- mayybee Nothing (Just . (1:)) $ mayybee Nothing (Just . (2:)) $ mayybee Nothing (Just . (3:)) $ Just []
+--                                                               $ (Just . (3:) $ []
+--                                                               $ Just [3]
+--                               $ (Just . (2:) $ [3])
+--                               $ Just [2,3]
+-- Just . (1:) $ [2,3]
+-- Just [1,2,3]
 
 
 ----------------------------
@@ -210,15 +252,45 @@ mkWord w = if(countVowels w > countCons) then Nothing else Just (Word' w)
 -- Write each of the following functions. If more than one possible
 -- unique function exists for the type, use common sense to determine
 -- what it should do.
+isLeft :: Either a b -> Bool
+isLeft (Left _) = True
+isLeft _        = False
+
+isRight :: Either a b -> Bool
+isRight = not . isLeft
+
+fromLeft :: Either a b -> a
+fromLeft (Left x) = x
+
+fromRight :: Either a b -> b
+fromRight (Right x) = x
+
+
 -- 1. Try to eventually arrive at a solution that uses foldr, even if earlier
 -- versions don’t use foldr.
--- lefts' :: [Either a b] -> [a]
+lefts' :: [Either a b] -> [a]
+lefts' = foldr (\a b -> if (isLeft a) then [fromLeft a] ++ b else b) []
+
+
 -- 2. Same as the last one. Use foldr eventually.
--- rights' :: [Either a b] -> [b]
+rights' :: [Either a b] -> [b]
+rights' = foldr (\a b -> if (isRight a) then [fromRight a] ++ b else b) []
+
+
 -- 3. partitionEithers' :: [Either a b] -> ([a], [b])
+partitionEithers' :: [Either a b] -> ([a], [b])
+partitionEithers' e = (lefts' e, rights' e)
+
 -- 4. eitherMaybe' :: (b -> c) -> Either a b -> Maybe c
+eitherMaybe' :: (b -> c) -> Either a b -> Maybe c
+eitherMaybe' f (Right x) = Just (f x)
+eitherMaybe' _ _         = Nothing
+
 -- 5. This is a general catamorphism for Either values.
--- either' :: (a -> c) -> (b -> c) -> Either a b -> c
+either' :: (a -> c) -> (b -> c) -> Either a b -> c
+either' f _ (Left x)  = f x
+either' _ g (Right y) = g y
+
 -- 6. Same as before, but use the either' function you just wrote.
 -- eitherMaybe'' :: (b -> c) -> Either a b -> Maybe c
 -- Most of the functions you just saw are in the Prelude, Data.Maybe,
