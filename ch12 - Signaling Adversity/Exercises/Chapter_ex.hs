@@ -1,6 +1,7 @@
 module Chapter_ex where
 
 import Data.Char
+import Data.List
 
 -----------------------
 -- Determine the kinds
@@ -292,7 +293,17 @@ either' f _ (Left x)  = f x
 either' _ g (Right y) = g y
 
 -- 6. Same as before, but use the either' function you just wrote.
--- eitherMaybe'' :: (b -> c) -> Either a b -> Maybe c
+eitherMaybe'' :: (b -> c) -> Either a b -> Maybe c
+eitherMaybe'' f = either' (const Nothing) (Just . f)
+
+--all others written with either
+lefts'' :: [Either a b] -> [a]
+lefts'' = foldr (\a b -> either' (:b) ((++ b) . const []) a) []
+
+rights'' :: [Either a b] -> [b]
+rights'' = foldr (\a b -> either' ((++ b) . const []) (:b) a) []
+
+
 -- Most of the functions you just saw are in the Prelude, Data.Maybe,
 -- or Data.Either but you should strive to write them yourself without
 -- looking at existing implementations. You will deprive yourself if you
@@ -335,13 +346,17 @@ either' _ g (Right y) = g y
 -- We bother with this for the same reason we abstracted direct recursion
 -- into folds, such as with sum, product, and concat.
 -- import Data.List
--- mehSum :: Num a => [a] -> a
--- mehSum xs = go 0 xs
--- where go :: Num a => a -> [a] -> a
--- go n [] = n
--- go n (x:xs) = (go (n+x) xs)
--- niceSum :: Num a => [a] -> a
--- niceSum = foldl' (+) 0
+mehSum :: Num a => [a] -> a
+mehSum xs = go 0 xs
+    where
+        go :: Num a => a -> [a] -> a
+        go n [] = n
+        go n (x:xs) = (go (n+x) xs)
+
+niceSum :: Num a => [a] -> a
+niceSum = foldl' (+) 0
+
+
 -- mehProduct :: Num a => [a] -> a
 -- mehProduct xs = go 1 xs
 -- where go :: Num a => a -> [a] -> a
@@ -372,14 +387,17 @@ either' _ g (Right y) = g y
 -- the behavior with the built-in iterate to gauge correctness. Do
 -- not look at the source or any examples of iterate so that you
 -- are forced to do this yourself.
--- myIterate :: (a -> a) -> a -> [a]
--- myIterate = undefined
+myIterate :: (a -> a) -> a -> [a]
+myIterate f x = [x] ++ myIterate f (f x)
+
+
 -- 2. Write the function myUnfoldr using direct recursion. Compare
 -- with the built-in unfoldr to check your implementation. Again,
 -- don’t look at implementations of unfoldr so that you figure it
 -- out yourself.
--- myUnfoldr :: (b -> Maybe (a, b)) -> b -> [a]
--- myUnfoldr = undefined
+myUnfoldr :: (b -> Maybe (a, b)) -> b -> [a]
+myUnfoldr f = mayybee [] (\(a,b) -> a : myUnfoldr f b) . f
+
 -- 3. Rewrite myIterate into betterIterate using myUnfoldr. A
 -- hint – we used unfoldr to produce the same results as iterate
 -- earlier. Do this with different functions and see if you can
