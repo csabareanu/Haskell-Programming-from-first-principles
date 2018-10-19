@@ -192,8 +192,7 @@ mayybee y _ _        = y
 -- -- >>> fromMaybe 0 (Just 1)
 -- -- 1
 fromMaybe :: a -> Maybe a -> a
-fromMaybe x Nothing = mayybee x id Nothing
-fromMaybe x z       = mayybee x id z
+fromMaybe x z = mayybee x id z
 
 -- and using flip - the first to args flipped
 fromMaybe' :: a -> Maybe a -> a
@@ -208,7 +207,7 @@ fromMaybe' = flip mayybee id
 -- -- Nothing
 listToMaybe :: [a] -> Maybe a
 listToMaybe []     = Nothing
-listToMaybe (x:_) = Just x
+listToMaybe (x:_)  = Just x
 
 -- -- >>> maybeToList (Just 1)
 -- -- [1]
@@ -404,8 +403,10 @@ myUnfoldr f = mayybee [] (\(a,b) -> a : myUnfoldr f b) . f
 -- abstract the structure out.
 -- -- It helps to have the types in front of you
 -- -- myUnfoldr :: (b -> Maybe (a, b)) -> b -> [a]
--- betterIterate :: (a -> a) -> a -> [a]
+betterIterate :: (a -> a) -> a -> [a]
 -- betterIterate f x = myUnfoldr ...?
+betterIterate f = myUnfoldr (\b -> Just (b, f b))
+
 -- Remember, your betterIterate should have the same results
 -- as iterate.
 -- Prelude> take 10 $ iterate (+1) 0
@@ -420,16 +421,18 @@ myUnfoldr f = mayybee [] (\(a,b) -> a : myUnfoldr f b) . f
 ----------------------------------------
 
 
-
 -- Given the BinaryTree from last chapter, complete the following exercises.
 -- Here’s that datatype again:
--- data BinaryTree a =
--- Leaf
----- | Node (BinaryTree a) a (BinaryTree a)
--- deriving (Eq, Ord, Show)
+data BinaryTree a =
+    Leaf
+    | Node (BinaryTree a) a (BinaryTree a)
+    deriving (Eq, Ord, Show)
+
 -- 1. Write unfold for BinaryTree.
 -- unfold :: (a -> Maybe (a,b,a)) -> a -> BinaryTree b
 -- unfold = undefined
+
+
 -- 2. Make a tree builder.
 -- Using the unfold function you’ve just made for BinaryTree,
 -- write the following function:
