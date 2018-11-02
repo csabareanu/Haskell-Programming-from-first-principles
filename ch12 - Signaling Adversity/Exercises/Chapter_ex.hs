@@ -429,15 +429,17 @@ data BinaryTree a =
     deriving (Eq, Ord, Show)
 
 -- 1. Write unfold for BinaryTree.
--- unfold :: (a -> Maybe (a,b,a)) -> a -> BinaryTree b
--- unfold = undefined
+unfold :: (a -> Maybe (a,b,a)) -> a -> BinaryTree b
+unfold f = mayybee Leaf ( \(la,b,ra) -> Node (unfold f la) b (unfold f ra) ) . f
 
 
 -- 2. Make a tree builder.
 -- Using the unfold function you’ve just made for BinaryTree,
 -- write the following function:
--- treeBuild :: Integer -> BinaryTree Integer
--- treeBuild n = undefined
+
+treeBuild :: Integer -> BinaryTree Integer
+treeBuild n = unfold (\b -> if (b < n) then Just (b+1, b, b+1) else Nothing) 0
+
 -- You should be producing results that look like the following:
 -- Prelude> treeBuild 0
 -- Leaf
