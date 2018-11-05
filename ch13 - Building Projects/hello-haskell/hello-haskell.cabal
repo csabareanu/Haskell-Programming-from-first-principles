@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 -- The name of the package.
-name:                hello-haskell
+name:                hello
 
 -- The package version.  See the Haskell package versioning policy (PVP)
 -- for standards guiding when and how versions should be incremented.
@@ -13,10 +13,10 @@ name:                hello-haskell
 version:             0.1.0.0
 
 -- A short (one-line) description of the package.
--- synopsis:
+synopsis:            blah blah
 
 -- A longer description of the package.
--- description:
+description:         A test project to test cabal functionality. It does not do anything too complicated.
 
 -- The license under which the package is released.
 license:             BSD3
@@ -34,7 +34,7 @@ maintainer:          ciprian.sabareanu@gmail.com
 -- A copyright notice.
 -- copyright:
 
--- category:
+category:            Data
 
 build-type:          Simple
 
@@ -44,6 +44,14 @@ extra-source-files:  ChangeLog.md
 
 -- Constraint on the version of Cabal needed to build this package.
 cabal-version:       >=1.10
+
+library
+  --exposed-modules:   Hello
+  ghc-options:       -Wall
+  hs-source-dirs:    src
+  build-depends:     base >=4.11 && <4.12
+  default-language:  Haskell2010
+
 
 
 executable hello-haskell
@@ -57,7 +65,7 @@ executable hello-haskell
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.11 && <4.12
+  build-depends:       base >=4.11 && <4.12, hello
 
   -- Directories containing source files.
   hs-source-dirs:      src
@@ -65,3 +73,6 @@ executable hello-haskell
   -- Base language which the package is written in.
   default-language:    Haskell2010
 
+  -- Added by Me:
+  ghc-options:         -Wall -fwarn-tabs
+  other-modules:       Hello
