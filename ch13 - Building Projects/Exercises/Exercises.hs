@@ -8,6 +8,7 @@ module Exercises where
 import Control.Monad
 import System.Exit(exitSuccess)
 import Data.Char
+import Data.Either
 
 
 palindrome :: IO ()
@@ -70,12 +71,10 @@ gimmePerson = do
     name <- getLine
     putStrLn "Enter age: "
     age <- readLn :: IO Integer
-    return ()
-    -- let person = mkPerson name age in
-        -- case (person) of
-        --     (Person _ _) -> putStrLn "Yay!!"
-        --     otherwise    -> putStrLn "hha"
-            --(PersonInvalid ) -> putStrLn "The following error occured: " ++
+    let person = mkPerson name age in
+        either (\a -> putStrLn ("Error creating person: " ++ show a))
+               (\a -> putStrLn ("Yay! Successfully got a person: " ++ show a))
+               person
 
 
 -- Since IO () is about the least informative type imaginable, we’ll
