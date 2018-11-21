@@ -2,34 +2,66 @@
 --------------------
 -- Using QuickCheck
 --------------------
+import Test.QuickCheck
+
+import Data.List (sort)
 
 -- Test some simple arithmetic properties using QuickCheck.
 
 -- 1. -- for a function
--- half x = x / 2
+half x = x / 2
 -- -- this property should hold
--- halfIdentity = (*2) . half
+halfIdentity = (*2) . half
+
+prop_halfIdentity :: Double -> Bool
+prop_halfIdentity x = halfIdentity x == (x::Double)
+
+test_halfIdentity :: IO ()
+test_halfIdentity = quickCheck prop_halfIdentity
 
 
 -- 2. import Data.List (sort)
 -- -- for any list you apply sort to
 -- -- this property should hold
--- listOrdered :: (Ord a) => [a] -> Bool
--- listOrdered xs = snd $ foldr go (Nothing, True) xs
--- where go _ status@(_, False) = status
--- go y (Nothing, t) = (Just y, t)
--- go y (Just x, t) = (Just y, x >= y)
+listOrdered :: (Ord a) => [a] -> Bool
+listOrdered xs = snd $ foldr go (Nothing, True) xs
+    where go _ status@(_, False) = status
+          go y (Nothing, t)      = (Just y, t)
+          go y (Just x, t)       = (Just y, x >= y)
+
+test_listOrderedInt :: IO ()
+test_listOrderedInt = quickCheck (listOrdered . sort :: [Int] -> Bool)
+
+test_listOrderedStr :: IO ()
+test_listOrderedStr = quickCheck (listOrdered . sort :: String -> Bool)
 
 
 -- 3. Now we’ll test the associative and commutative properties of
 -- addition:
--- plusAssociative x y z =
--- x + (y + z) == (x + y) + z
--- plusCommutative x y =
--- x + y == y + x
+plusAssociative x y z =
+    x + (y + z) == (x + y) + z
+plusCommutative x y =
+    x + y == y + x
+
+test_assoc :: IO ()
+test_assoc = quickCheck (plusAssociative :: Int -> Int -> Int -> Bool)
+
+test_comm :: IO ()
+test_comm = quickCheck (plusCommutative :: Int -> Int -> Bool)
 
 
 -- 4. Now do the same for multiplication.
+
+multAssociative x y z =
+    x * (y * z) == (x * y) * z
+multCommutative x y =
+    x * y == y * x
+
+test_assoc_mult :: IO ()
+test_assoc_mult = quickCheck (multAssociative :: Int -> Int -> Int -> Bool)
+
+test_comm_mult :: IO ()
+test_comm_mult = quickCheck (multCommutative :: Int -> Int -> Bool)
 
 
 -- 5. We mentioned in one of the first chapters that there are some
