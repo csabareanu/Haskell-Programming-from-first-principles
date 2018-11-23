@@ -7,6 +7,8 @@ import Data.List (intersperse)
 import System.Exit (exitSuccess)
 import System.Random (randomRIO)
 
+import Test.QuickCheck
+
 main :: IO ()
 main = do
     word <- randomWord'
@@ -122,3 +124,11 @@ runGame puzzle = forever $ do
     case guess of
         [c] -> handleGuess puzzle c >>= runGame
         _   -> putStrLn "Your guess must be a single char"
+
+
+
+fill_in_char_prop :: Puzzle -> Char -> Bool
+fill_in_char_prop (Puzzle word filledInSoFar s) c = True
+
+fill_in_char_test :: IO ()
+fill_in_char_test = quickCheck (fill_in_char_prop :: Puzzle -> Char -> Bool)

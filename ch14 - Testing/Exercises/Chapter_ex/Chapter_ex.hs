@@ -227,16 +227,19 @@ capitalizeWord :: String -> String
 capitalizeWord xs = map toUpper (take 1 xs) ++ drop 1 xs
 
 -- 1.
--- f x = capitalize == twice capitalize && capitalize == fourTimes capitalize
---     where capitalize = capitalizeWord x
+f1 :: String -> Bool
+f1 x = capitalize == twice capitalizeWord x && capitalize == fourTimes capitalizeWord x
+    where capitalize = capitalizeWord x
+
+test_f1 = quickCheck (f1 :: String -> Bool)
 
 
+-- 2.
+f2 :: (Ord a) => [a] -> Bool
+f2 x = (sorting == twice sort x) && (sorting == fourTimes sort x)
+    where sorting = sort x
 
-
--- 2. f x =
--- sort x
--- == twice sort x
--- == fourTimes sort x
+test_f2 = quickCheck (f2 :: [Int] -> Bool)
 
 
 ------------------------------------------------
@@ -248,13 +251,60 @@ capitalizeWord xs = map toUpper (take 1 xs) ++ drop 1 xs
 -- to ask you to do it for some new datatypes:
 
 -- 1. Equal probabilities for each.
--- data Fool =
--- Fulse
----- | Frue
--- deriving (Eq, Show)
+data Fool = Fulse | Frue deriving (Eq, Show)
+
+fool_gen :: Gen Fool
+fool_gen = elements [Fulse, Frue]
 
 -- 2. 2/3s chance of Fulse, 1/3 chance of Frue.
 -- data Fool =
 -- Fulse
 ---- | Frue
 -- deriving (Eq, Show)
+
+fool_gen2 :: Gen Fool
+fool_gen2 = frequency [(1, return Frue)
+                      ,(2, return Fulse)]
+
+-- *Main> sample' fool_gen2
+-- [Fulse,Frue,Fulse,Fulse,Fulse,Fulse,Frue,Frue,Fulse,Fulse,Fulse]
+
+-------------------
+-- Hangman testing
+-------------------
+
+-- Tested in Chapter 13 Project
+
+-- Next, you should go back to the Hangman project from the previous
+-- chapter and write tests. The kinds of tests you can write at this point
+-- will be limited due to the interactive nature of the game. However, you
+-- can test the functions. Focus your attention on testing the following:
+-- fillInCharacter :: Puzzle -> Char -> Puzzle
+-- fillInCharacter (Puzzle word filledInSoFar s) c =
+-- Puzzle word newFilledInSoFar (c : s)
+-- where zipper guessed wordChar guessChar =
+-- if wordChar == guessed
+-- then Just wordChar
+-- else guessChar
+-- newFilledInSoFar =
+-- zipWith (zipper c) word filledInSoFar
+-- and:
+-- handleGuess :: Puzzle -> Char -> IO Puzzle
+-- handleGuess puzzle guess = do
+-- putStrLn $ "Your guess was: " ++ [guess]
+-- case (charInWord puzzle guess
+-- , alreadyGuessed puzzle guess) of
+-- (_, True) -> do
+-- putStrLn "You already guessed that\
+-- \ character, pick something else!"
+-- return puzzle
+-- (True, _) -> do
+-- putStrLn "This character was in the word,\
+-- \ filling in the word accordingly"
+-- return (fillInCharacter puzzle guess)
+-- (False, _) -> do
+-- putStrLn "This character wasn't in\
+-- \ the word, try again."
+-- return (fillInCharacter puzzle guess)
+-- Refresh your memory on what those are supposed to do and then
+-- test to make sure they do.
