@@ -273,7 +273,7 @@ fool_gen2 = frequency [(1, return Frue)
 -- Hangman testing
 -------------------
 
--- Tested in Chapter 13 Project
+-- Tested in Chapter 14 my-hangman
 
 -- Next, you should go back to the Hangman project from the previous
 -- chapter and write tests. The kinds of tests you can write at this point

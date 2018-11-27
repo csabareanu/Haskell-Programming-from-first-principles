@@ -1,4 +1,4 @@
-module Main where
+module MyHangman where
 
 import Control.Monad (forever)
 import Data.Char (toLower)
@@ -7,13 +7,6 @@ import Data.List (intersperse)
 import System.Exit (exitSuccess)
 import System.Random (randomRIO)
 
-import Test.QuickCheck
-
-main :: IO ()
-main = do
-    word <- randomWord'
-    let puzzle = freshPuzzle (fmap toLower word)
-    runGame puzzle
 
 --type WordList = [String]
 newtype WordList =
