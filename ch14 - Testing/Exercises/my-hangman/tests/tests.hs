@@ -1,11 +1,13 @@
 module Main where
 
+import MyHangman
 import Test.Hspec
 import Test.Hspec.QuickCheck (prop)
 
+
 -- prop :: (HasCallStack, Testable prop) => String -> prop -> Spec
 -- prop ".." $ .. is a shortcut for
--- it ".." $ property $ ..
+-- it ".." $ do property $ ..
 
 -- forAll :: (Show a, Testable prop) => Gen a -> (a -> prop) -> Property
 main :: IO ()
