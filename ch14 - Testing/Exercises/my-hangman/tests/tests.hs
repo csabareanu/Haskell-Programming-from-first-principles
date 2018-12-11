@@ -30,3 +30,19 @@ puzzleWithExistingCharGen = do
 puzzleWithAnyCharGen :: Gen (Puzzle, Char)
 puzzleWithAnyCharGen = oneof [ puzzleWithNonExistingCharGen
                                 , puzzleWithExistingCharGen ]
+
+puzzleGen :: Gen Puzzle
+puzzleGen = do
+    word' <-wordGen 5 9
+
+
+wordGen :: Int -> Int -> Gen String
+wordGen mn mx = do
+    k <- choose (mn, mx) :: Gen Int
+    sequence [ letterGen | _ <- [1..k] ]
+
+letterGen :: Gen Char
+letterGen = elements letterRange
+
+letterRange :: [Char]
+letterRange = ['a'..'z']
