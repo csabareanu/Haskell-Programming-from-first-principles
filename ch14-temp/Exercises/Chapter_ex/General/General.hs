@@ -135,10 +135,15 @@ check_dollar_2 = quickCheck (prop_dollar length :: [Int] -> Bool)
 
 
 
--- -- 9. See if these two functions are equal:
--- -- foldr (:) == (++)
--- -- foldr (++) [] == concat
+-- 9. See if these two functions are equal:
+-- foldr (:) == (++)
+-- foldr (++) [] == concat
 
+prop_cons :: [Int] -> [Int] -> Bool
+prop_cons x y = foldr (:) x y == (++) x y
+
+cons_test :: IO()
+cons_test = quickCheck prop_cons
 
 -- -- 10. Hm. Is that so?
 -- f n xs = length (take n xs) == n
