@@ -3,6 +3,7 @@
 ---------------------
 import Test.QuickCheck
 import Data.List (sort)
+import Data.Char (toUpper)
 
 ----------------------------------------------------------------
 -- Test some simple arithmetic properties using QuickCheck.
@@ -140,33 +141,61 @@ check_dollar_2 = quickCheck (prop_dollar length :: [Int] -> Bool)
 -- foldr (++) [] == concat
 
 prop_cons :: [Int] -> [Int] -> Bool
-prop_cons x y = foldr (:) x y == (++) x y
+prop_cons x y = foldr (:) x y == (++) y x
 
+prop_concat :: [[Int]] -> Bool
+prop_concat x = foldr (++) [] x == concat x
+
+-- passes the test only if we compare foldr (:) x y with (++) y x.
 cons_test :: IO()
 cons_test = quickCheck prop_cons
 
--- -- 10. Hm. Is that so?
+concat_test :: IO()
+concat_test = quickCheck prop_concat
+
+
+
+-- 10. Hm. Is that so?
 -- f n xs = length (take n xs) == n
+-- holds only if n <= length xs
+prop_len :: Int -> [Int] -> Bool
+prop_len n xs = length (take n xs) == n
+
+len_test :: IO()
+len_test = quickCheck prop_len
 
 
-
--- -- 11. Finally, this is a fun one. You may remember we had you compose
--- -- read and show one time to complete a “round trip.” Well,
--- -- now you can test that it works:
+-- 11. Finally, this is a fun one. You may remember we had you compose
+-- read and show one time to complete a “round trip.” Well,
+-- now you can test that it works:
 -- f x = (read (show x)) == x
+
+prop_rs :: [Int] -> Bool
+prop_rs x = read . show $ x == x
+
+rs_test :: IO()
+rs_test = quickCheck prop_rs
 
 
 -- -----------
 -- --Failure
 -- -----------
 
--- -- Find out why this property fails.
--- -- for a function
--- square x = x * x
--- -- why does this property not hold? Examine the type of sqrt.
+-- Find out why this property fails.
+-- for a function
+square :: (Num a) => a -> a
+square = (^2)
+-- why does this property not hold? Examine the type of sqrt.
 -- squareIdentity = square . sqrt
--- -- Hint: Read about floating point arithmetic and precision if you’re
--- -- unfamiliar with it.
+prop_sq :: (Eq a, Floating a) => a -> Bool
+prop_sq x = (==) x $ square . sqrt $ x
+
+sq_test :: IO ()
+sq_test = quickCheck (prop_sq :: Float -> Bool)
+
+-- Hint: Read about floating point arithmetic and precision if you’re
+-- unfamiliar with it.
+-- Response: because of floating point precision issues
 
 
 -- ---------------
@@ -182,18 +211,37 @@ cons_test = quickCheck prop_cons
 -- -- new applications of the sort function won’t change it.
 -- -- Use QuickCheck and the following helper functions to demonstrate
 -- -- idempotence for the following:
--- twice f = f . f
--- fourTimes = twice . twice
+twice f = f . f
+fourTimes = twice . twice
+
+capitalizeWord :: String -> String
+capitalizeWord w = map toUpper (take 1 w) ++ (drop 1 w)
+
+
 -- -- 1.
 -- f x =
 --     capitalizeWord x
 --         == twice capitalizeWord x
 --         == fourTimes capitalizeWord x
+prop_id :: String -> Bool
+prop_id s = cap == twice capitalizeWord s && cap == fourTimes capitalizeWord s
+    where cap = capitalizeWord s
+
+id_test :: IO()
+id_test = quickCheck prop_id
+
 -- -- 2.
 -- f x =
 --     sort x
 --         == twice sort x
 --         == fourTimes sort x
+
+prop_sort :: [Int] -> Bool
+prop_sort x = srt == twice sort x && srt == fourTimes sort x
+    where srt = sort x
+
+sort_test :: IO()
+sort_test = quickCheck prop_sort
 
 -- -- Make a Gen random generator for the datatype
 -- -- We demonstrated in the chapter how to make Gen generators for
@@ -202,7 +250,7 @@ cons_test = quickCheck prop_cons
 -- -- 1. Equal probabilities for each.
 -- data Fool =
 --         Fulse
---         | Frue
+----         | Frue
 --     deriving (Eq, Show)
 
 -- -- 2. 2/3s chance of Fulse, 1/3 chance of Frue.
