@@ -1,7 +1,6 @@
 module MyHangman where
 
 import Control.Monad (forever)
-import Data.Char (toLower)
 import Data.Maybe (isJust)
 import Data.List (intersperse)
 import System.Exit (exitSuccess)
@@ -93,7 +92,7 @@ guessedIncorrect (Puzzle wordToGuess _ guessed) =
     length $ filter (\a -> not $elem a wordToGuess) guessed
 
 gameOver :: Puzzle -> IO ()
-gameOver t@(Puzzle wordToGuess _ guessed) =
+gameOver t@(Puzzle wordToGuess _ _) =
     if (guessedIncorrect t) > 7 then
         do putStrLn "You lose!"
            putStrLn $ "The word was: " ++ wordToGuess
