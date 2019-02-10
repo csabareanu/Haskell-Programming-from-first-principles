@@ -2,6 +2,7 @@ module Main where
 
 import MyHangman
 import Test.Hspec
+import Test.QuickCheck
 import Test.Hspec.QuickCheck (prop)
 
 
@@ -28,12 +29,13 @@ puzzleWithExistingCharGen = do
         return (puzzle, char)
 
 puzzleWithAnyCharGen :: Gen (Puzzle, Char)
-puzzleWithAnyCharGen = oneof [ puzzleWithNonExistingCharGen
-                                , puzzleWithExistingCharGen ]
+puzzleWithAnyCharGen = return puzzleWithExistingCharGen
 
 puzzleGen :: Gen Puzzle
 puzzleGen = do
-    word' <-wordGen 5 9
+    word' <- wordGen 5 9
+    guessed <- wordGen (bool 0 2 forceGuessed) 3
+    return $ Puzzle word' (map (const Nothing) word') guessed
 
 
 wordGen :: Int -> Int -> Gen String
