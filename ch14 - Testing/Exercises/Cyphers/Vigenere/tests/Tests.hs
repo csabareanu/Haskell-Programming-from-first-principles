@@ -1,11 +1,14 @@
 module Tests where
 
-import Test.Hspec
+-- import Test.Hspec
 import Test.QuickCheck
 import MyVigenere
 
 keyword :: String
-keyword = "Hello"
+keyword = "hello"
+
+sanitize :: String->String
+sanitize = unwords . words
 
 -- main :: IO ()
 -- main = hspec $ do
@@ -16,4 +19,4 @@ keyword = "Hello"
 --                     property $ \x -> x == (unvigenere keyword . vigenere keyword) (x :: String)
 
 testVigenereIdentity :: IO ()
-testVigenereIdentity = quickCheck (\x -> x == (unvigenere keyword . vigenere keyword) x )
+testVigenereIdentity = quickCheck (\x -> sanitize x == (unvigenere keyword . vigenere keyword) x )

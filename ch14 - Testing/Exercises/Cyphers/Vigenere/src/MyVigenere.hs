@@ -1,6 +1,6 @@
 module MyVigenere where
 
-import Data.Char(ord,chr)
+import Data.Char(ord,chr, toLower)
 
 encode :: Char -> Int
 encode x = ord x - ord 'a'
