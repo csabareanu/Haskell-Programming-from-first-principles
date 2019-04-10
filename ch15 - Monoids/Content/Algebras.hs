@@ -23,3 +23,9 @@
 -- Integer does not have a Monoid instance because there are 2 operations that are monoidal (* and +) and each type should have one unique instance for a given typeclass
 -- mappend 1 2 -> it is not clear if we want the values to be added or multiplied
 -- To resolve this we have Sum and Product newtypes to wrap numeric values and signal which Monoid instance we want.
+
+----------------
+-- Bool Monoids
+----------------
+-- Conjuction: (ALL) True if and only if ALL values it is "appending" are True.
+-- Disjunction: (ANY) True if any value it appends is True.
