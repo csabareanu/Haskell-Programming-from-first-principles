@@ -24,8 +24,17 @@
 -- mappend 1 2 -> it is not clear if we want the values to be added or multiplied
 -- To resolve this we have Sum and Product newtypes to wrap numeric values and signal which Monoid instance we want.
 
+--  Mappending is perhaps best thought of not as a way of
+--combining values in the way that addition or list concatenation does,
+--but as a way to condense any set of values to a summary value
+
 ----------------
 -- Bool Monoids
 ----------------
 -- Conjuction: (ALL) True if and only if ALL values it is "appending" are True.
 -- Disjunction: (ANY) True if any value it appends is True.
+
+-----------------
+-- Maybe Monoids
+-----------------
+-- 1) First and Last - First or last value that is not Nothing or Nothing
