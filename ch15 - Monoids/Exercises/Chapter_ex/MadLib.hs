@@ -10,10 +10,10 @@ type Exclamation = String
 
 
 madlibbin' :: Exclamation
-    -> Adverb
-    -> Noun
-    -> Adjective
-    -> String
+                -> Adverb
+                -> Noun
+                -> Adjective
+                -> String
 
 madlibbin' e adv noun adj =
     e <> "! he said " <>
@@ -24,8 +24,17 @@ madlibbin' e adv noun adj =
 
 -- Now you’re going to refactor this code a bit! Rewrite it using mconcat.
 madlibbinBetter' :: Exclamation
--> Adverb
--> Noun
--> Adjective
--> String
-madlibbinBetter' e adv noun adj = undefined
+                    -> Adverb
+                    -> Noun
+                    -> Adjective
+                    -> String
+madlibbinBetter' e adv noun adj =
+    mconcat [e,
+             "! he said ",
+             adv,
+             " as he jumped into his car ",
+             noun,
+             " and drove off with this ",
+             adj,
+             " wife."
+             ]
