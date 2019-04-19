@@ -65,7 +65,7 @@ instance (Monoid a) => Monoid (First' a) where
     mappend (First' (Only x))   (First' (Only y))   = First' { getFirst' = Only $ mappend x y  }
     mappend _                   _                   = First' { getFirst' = Nada}
 
-instance (Arbitrary a ) => Arbitrary (First' a) where
+instance (Arbitrary a) => Arbitrary (First' a) where
     arbitrary = do
         a <- arbitrary
         frequency [ (3, return $ First' (Only a)),
@@ -76,16 +76,16 @@ instance (Arbitrary a ) => Arbitrary (First' a) where
 -- firstMappend = mappend
 
 type FirstMappend =
-    First' String
-    -> First' String
-    -> First' String
-    -> Bool
+    First' S
+    -> First' S
+    -> First' S
+    -> B
 
 main :: IO ()
 main = do
     quickCheck (monoidAssoc :: FirstMappend)
-    quickCheck (monoidLeftId :: First' String -> Bool)
-    quickCheck (monoidRightId :: First' String -> Bool)
+    quickCheck (monoidLeftId :: First' S -> B)
+    quickCheck (monoidRightId :: First' S -> B)
 
 
 -- Our expected output demonstrates a different Monoid for Optional/Maybe

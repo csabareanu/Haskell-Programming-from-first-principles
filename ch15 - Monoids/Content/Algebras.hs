@@ -38,3 +38,16 @@
 -- Maybe Monoids
 -----------------
 -- 1) First and Last - First or last value that is not Nothing or Nothing
+
+
+-----------------
+-- SEMIGROUPS----
+-----------------
+
+-- A semigroup is a binary associative operation (It's a monoid without the identity property)
+
+-- class Semigroup a where
+--   (<>) :: a -> a -> a
+
+-- The rule that a monoid must obey:
+-- (a <> b) <> c == a <> (b <> c)
