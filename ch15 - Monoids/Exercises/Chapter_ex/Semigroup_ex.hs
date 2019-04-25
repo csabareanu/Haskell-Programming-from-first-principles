@@ -1,6 +1,7 @@
 module Semigroup_ex where
 
 import Test.QuickCheck
+import Data.Monoid
 
 -- Given a datatype, implement the Semigroup instance. Add Semigroup
 -- constraints to type variables where needed. Use the Semigroup
@@ -151,8 +152,26 @@ data Or a b =
 -- Snd 1
 -- Prelude> Snd 1 <> Snd 2
 -- Snd 1
--- 9. newtype Combine a b =
--- Combine { unCombine :: (a -> b) }
+
+instance Semigroup (Or a b) where
+    (Fst x) <> t@(_) = t
+    (Snd x) <> _     = Snd x
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Or a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        oneof [ return $ Fst a, return $ Snd b ]
+
+type OrTypes = Or String Int
+
+type OrAssoc = OrTypes -> OrTypes -> OrTypes -> Bool
+
+-- 9.
+newtype Combine a b =
+    Combine { unCombine :: (a -> b) }
+        --deriving (Show)
+
 -- What it should do:
 -- Prelude> let f = Combine $ \n -> Sum (n + 1)
 -- Prelude> let g = Combine $ \n -> Sum (n - 1)
@@ -171,6 +190,11 @@ data Or a b =
 -- type of the value inside of Combine is that of a function. If you
 -- can’t figure out CoArbitrary, don’t worry about QuickChecking
 -- this one.
+
+instance (Semigroup b) => Semigroup (Combine a b) where
+    f <> g = Combine { unCombine = (unCombine f <> unCombine g) }
+
+
 -- 10. newtype Comp a =
 -- Comp { unComp :: (a -> a) }
 -- Hint: We can do something that seems a little more specific and
@@ -211,3 +235,4 @@ main = do
     quickCheck (semigroupAssoc :: FourAssoc) --5
     quickCheck (semigroupAssoc :: BoolConjAssoc) --6
     quickCheck (semigroupAssoc :: BoolDisjAssoc) --7
+    quickCheck (semigroupAssoc :: OrAssoc) --8
