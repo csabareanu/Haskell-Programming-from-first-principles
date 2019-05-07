@@ -2,6 +2,7 @@ module Semigroup_ex where
 
 import Test.QuickCheck
 import Data.Monoid
+import Data.Semigroup
 
 -- Given a datatype, implement the Semigroup instance. Add Semigroup
 -- constraints to type variables where needed. Use the Semigroup
@@ -170,7 +171,6 @@ type OrAssoc = OrTypes -> OrTypes -> OrTypes -> Bool
 -- 9.
 newtype Combine a b =
     Combine { unCombine :: (a -> b) }
-        --deriving (Show)
 
 -- What it should do:
 -- Prelude> let f = Combine $ \n -> Sum (n + 1)
@@ -194,19 +194,48 @@ newtype Combine a b =
 instance (Semigroup b) => Semigroup (Combine a b) where
     f <> g = Combine { unCombine = (unCombine f <> unCombine g) }
 
+-- https://kseo.github.io/posts/2016-12-14-how-quick-check-generate-random-functions.html
 
--- 10. newtype Comp a =
--- Comp { unComp :: (a -> a) }
+-- 10.
+newtype Comp a =
+    Comp { unComp :: (a -> a) }
+
 -- Hint: We can do something that seems a little more specific and
 -- natural to functions now that the input and output types are the
 -- same.
+
+instance (Semigroup a) => Semigroup (Comp a) where
+    f <> g = Comp { unComp = (unComp f <> unComp g) }
+
+
 -- 11. -- Look familiar?
--- data Validation a b =
--- Failure a | Success b
--- deriving (Eq, Show)
--- instance Semigroup a =>
--- Semigroup (Validation a b) where
--- (<>) = undefined
+data Validation a b =
+    Failure a
+    | Success b
+    deriving (Eq, Show)
+
+instance Semigroup a => Semigroup (Validation a b) where
+    (Semigroup_ex.Success x) <> _                        = Semigroup_ex.Success x
+    (Semigroup_ex.Failure x) <> (Semigroup_ex.Success y) = Semigroup_ex.Success y
+    (Semigroup_ex.Failure x) <> (Semigroup_ex.Failure y) = Semigroup_ex.Failure (x <> y)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Validation a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        oneof [return $ Semigroup_ex.Failure a,
+               return $ Semigroup_ex.Success b
+                ]
+
+type ValidationType = Validation String Int
+
+type ValidationAssoc = ValidationType -> ValidationType -> ValidationType -> Bool
+
+
+
+
+
+
 -- 12. -- Validation with a Semigroup
 -- -- that does something different
 -- newtype AccumulateRight a b =
@@ -236,3 +265,4 @@ main = do
     quickCheck (semigroupAssoc :: BoolConjAssoc) --6
     quickCheck (semigroupAssoc :: BoolDisjAssoc) --7
     quickCheck (semigroupAssoc :: OrAssoc) --8
+    quickCheck (semigroupAssoc :: ValidationAssoc)
