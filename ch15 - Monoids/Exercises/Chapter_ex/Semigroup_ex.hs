@@ -232,27 +232,53 @@ type ValidationType = Validation String Int
 type ValidationAssoc = ValidationType -> ValidationType -> ValidationType -> Bool
 
 
-
-
-
-
 -- 12. -- Validation with a Semigroup
 -- -- that does something different
--- newtype AccumulateRight a b =
--- AccumulateRight (Validation a b)
--- deriving (Eq, Show)
--- instance Semigroup b =>
--- Semigroup (AccumulateRight a b) where
--- (<>) = undefined
+newtype AccumulateRight a b =
+    AccumulateRight (Validation a b)
+    deriving (Eq, Show)
+
+instance Semigroup b => Semigroup (AccumulateRight a b) where
+    AccumulateRight (Semigroup_ex.Success x) <> AccumulateRight (Semigroup_ex.Success y) = AccumulateRight (Semigroup_ex.Success (x <> y))
+    AccumulateRight (Semigroup_ex.Success x) <> _                                        = AccumulateRight (Semigroup_ex.Success x)
+    _                                        <> y                                        = y
+
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (AccumulateRight a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        oneof [return $ AccumulateRight (Semigroup_ex.Failure a),
+               return $ AccumulateRight (Semigroup_ex.Success b)
+            ]
+
+type AccRightType = AccumulateRight Int String
+
+type AccRightAssoc = AccRightType -> AccRightType -> AccRightType -> Bool
 -- 13. -- Validation with a Semigroup
 -- -- that does something more
--- newtype AccumulateBoth a b =
--- AccumulateBoth (Validation a b)
--- deriving (Eq, Show)
--- instance (Semigroup a, Semigroup b) =>
--- Semigroup (AccumulateBoth a b) where
--- (<>) = undefined
 
+newtype AccumulateBoth a b =
+    AccumulateBoth (Validation a b)
+    deriving (Eq, Show)
+
+instance (Semigroup a, Semigroup b) => Semigroup (AccumulateBoth a b) where
+    AccumulateBoth (Semigroup_ex.Success x) <> AccumulateBoth (Semigroup_ex.Success y) = AccumulateBoth (Semigroup_ex.Success(x <> y))
+    AccumulateBoth (Semigroup_ex.Failure x) <> AccumulateBoth (Semigroup_ex.Failure y) = AccumulateBoth (Semigroup_ex.Failure(x <> y))
+    AccumulateBoth (Semigroup_ex.Failure x) <> _                                       = AccumulateBoth (Semigroup_ex.Failure x)
+    _                                       <> AccumulateBoth (Semigroup_ex.Failure y) = AccumulateBoth (Semigroup_ex.Failure y)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (AccumulateBoth a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        oneof [return $ AccumulateBoth (Semigroup_ex.Failure a),
+               return $ AccumulateBoth (Semigroup_ex.Success b)
+            ]
+
+type AccBothType = AccumulateBoth String String
+
+type AccBothAssoc = AccBothType -> AccBothType -> AccBothType -> Bool
 
 main :: IO ()
 main = do
@@ -265,4 +291,6 @@ main = do
     quickCheck (semigroupAssoc :: BoolConjAssoc) --6
     quickCheck (semigroupAssoc :: BoolDisjAssoc) --7
     quickCheck (semigroupAssoc :: OrAssoc) --8
-    quickCheck (semigroupAssoc :: ValidationAssoc)
+    quickCheck (semigroupAssoc :: ValidationAssoc) -- 11
+    quickCheck (semigroupAssoc :: AccRightAssoc) -- 12
+    quickCheck (semigroupAssoc :: AccBothAssoc) -- 13
