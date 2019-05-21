@@ -1,0 +1,27 @@
+1. A monoid is a set that is closed under an associative binary operation
+and has an identity element. Closed is the posh mathematical
+way of saying it’s type is:
+mappend :: m -> m -> m
+Such that your arguments and output will always inhabit the
+same type (set).
+2. A semigroup is a set that is closed under an associative binary
+operation — and nothing else.
+3. Laws are rules about how an algebra or structure should behave.
+These are needed in part to make abstraction over the commonalities
+of different instantiations of the same sort of algebra
+possible and practical. This is critical to having abstractions which
+aren’t unpleasantly surprising.
+4. An algebra is variously:
+a) School algebra, such as that taught in primary and secondary
+school. This usually entails the balancing of polynomial
+equations and learning how functions and graphs work.
+b) The study of number systems and operations within them.
+This will typically entail a particular area such as groups
+or rings. This is what mathematicians commonly mean
+by “algebra.” This is sometimes disambiguated by being
+referred to as abstract algebra.
+c) A third and final way algebra is used is to refer to a vector
+space over a field with a multiplication.
+When Haskellers refer to algebras, they’re usually talking about a
+somewhat informal notion of operations over a type and its laws,
+such as with semigroups, monoids, groups, semirings, and rings.
