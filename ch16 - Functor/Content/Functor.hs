@@ -54,3 +54,72 @@ data FixMePls a =
 instance Functor FixMePls where
     fmap _ FixMe   = FixMe
     fmap f (Pls a) = Pls (f a)
+
+
+--------------------
+-- FUNCTOR LAWS
+--------------------
+-- Must abide 2 laws:
+-- 1) IDENTITY
+-- 2) COMPOSITION
+
+-- fmap (f . g) = fmap f . fmap g
+-- Prelude> fmap ((+1) . (*5)) [1..5]
+-- [6,11,16,21,26]
+-- Prelude> fmap (+1) . fmap (*5) $[1..5]
+-- [6,11,16,21,26]
+
+
+data WhoCares a =
+    ItDoesnt             -- only structure
+    | Matter a           -- value we can fmap over inside the structure
+    | WhatThisIsCalled   -- only structure
+    deriving (Eq, Show)
+
+-- law abiding
+instance Functor WhoCares where
+    fmap _ ItDoesnt         = ItDoesnt
+    fmap f (Matter a)       = Matter (f a)
+    fmap _ WhatThisIsCalled = WhatThisIsCalled
+
+--------------------------
+-- Identity law breaking
+--------------------------
+
+-- instance Functor WhoCares where
+--     fmap _ ItDoesnt         = WhatThisIsCalled
+--     fmap f WhatThisIsCalled = ItDoesnt
+--     fmap f (Matter a)       = Matter (f a)
+
+-- Prelude> fmap id ItDoesnt
+-- WhatThisIsCalled
+-- Prelude> fmap id WhatThisIsCalled
+-- ItDoesnt
+-- Prelude> fmap id ItDoesnt == id ItDoesnt
+-- False
+-- Prelude> fmap id WhatThisIsCalled == id WhatThisIsCalled
+-- False
+
+-------------------------------
+-- Composability law breaking
+-------------------------------
+
+data CountingBad a =
+    Heisenberg Int a
+    deriving (Eq, Show)
+
+-- NOT OKAY
+-- instance Functor CountingBad where
+--     fmap f (Heisenberg n a) = Heisenberg (n + 1) (f a)
+--     (a->b)       f       a  =      f               b
+
+-- Prelude> let f = (++" Jesse")
+-- Prelude> let g = (++" lol")
+-- Prelude> fmap (f . g) oneWhoKnocks
+-- Heisenberg 1 "Uncle lol Jesse"
+-- Prelude> fmap f . fmap g $ oneWhoKnocks
+-- Heisenberg 2 "Uncle lol Jesse"
+
+-- OKAY
+instance Functor CountingBad where
+    fmap f (Heisenberg n a) = Heisenberg (n) (f a)
