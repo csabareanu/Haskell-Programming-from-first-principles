@@ -60,7 +60,7 @@ instance Functor FixMePls where
 -- FUNCTOR LAWS
 --------------------
 -- Must abide 2 laws:
--- 1) IDENTITY
+-- 1) IDENTITY : fmap id == id
 -- 2) COMPOSITION
 
 -- fmap (f . g) = fmap f . fmap g
@@ -112,6 +112,12 @@ data CountingBad a =
 -- instance Functor CountingBad where
 --     fmap f (Heisenberg n a) = Heisenberg (n + 1) (f a)
 --     (a->b)       f       a  =      f               b
+
+-- Prelude> let oneWhoKnocks = Heisenberg 0 "Uncle"
+-- Prelude> fmap (++" Jesse") oneWhoKnocks
+-- Heisenberg 1 "Uncle Jesse"
+-- Prelude> fmap ((++" Jesse") . (++" lol")) oneWhoKnocks
+-- Heisenberg 1 "Uncle lol Jesse"
 
 -- Prelude> let f = (++" Jesse")
 -- Prelude> let g = (++" lol")
