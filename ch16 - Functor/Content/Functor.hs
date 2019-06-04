@@ -129,3 +129,54 @@ data CountingBad a =
 -- OKAY
 instance Functor CountingBad where
     fmap f (Heisenberg n a) = Heisenberg (n) (f a)
+
+
+
+----------------------------------------------------------------------------------------------
+-- What happens to the outer most type arguments when we can only transform the innermost ?
+----------------------------------------------------------------------------------------------
+
+-- (,)
+data Two a b =
+    Two a b
+    deriving (Eq, Show)
+
+-- Either
+data Or a b =
+    First a
+    | Second b
+    deriving (Eq, Show)
+
+-- Both of the above have kind * -> * -> * which is not compatible with Functor (Functor must have kind * -> *)
+-- By partially applying some arguments, we can reduce the kindness of the type.
+-- For these given types, it suffices to apply one of the arguments of each type constructor, giving us kind * -> *
+
+-- Prelude> :k Either
+-- Either :: * -> * -> *
+-- Prelude> :k Either Int
+-- Either Int :: * -> *
+-- Prelude> :k Either Int String
+-- Either Int String :: *
+
+---------------
+-- WON'T WORK
+---------------
+-- instance Functor Two where
+--     fmap = undefined
+
+-- instance Functor Or where
+--     fmap = undefined
+
+
+-------------------
+-- WILL WORK
+-------------------
+instance Functor (Two a) where
+    -- WON'T WORK because a is now part of the functorial structure, the f.
+    -- fmap f (Two a b) = Two $ (f a) (f b)
+    -- WILL WORK
+    fmap f (Two a b) = Two a (f b)
+
+instance Functor (Or a) where
+    fmap _ (First a)  = First a
+    fmap f (Second b) = Second (f b)
