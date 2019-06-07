@@ -50,7 +50,7 @@ data Pair a = Pair a a
     deriving (Eq, Show)
 
 instance Functor Pair where
-    fmap f (Pair a b) = Pair (f a) (f a)
+    fmap f (Pair a b) = Pair (f a) (f b)
 
 instance (Arbitrary a) => Arbitrary (Pair a) where
     arbitrary = do
@@ -98,18 +98,61 @@ type ThreeComp = ThreeIdent -> IntToString -> StringToInt -> Bool
 
 -- 5.
 data Three' a b = Three' a b b
+    deriving (Eq, Show)
+
+instance Functor (Three' a) where
+    fmap f (Three' a b c) = Three' a (f b) (f c)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Three' a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        return $ Three' a b b
+
+type Three'Ident = Three' Int Int
+type Three'Comp = Three'Ident -> IntToString -> StringToInt -> Bool
 
 
 -- 6.
 data Four a b c d = Four a b c d
+    deriving (Eq, Show)
+
+instance Functor (Four a b c) where
+    fmap f (Four a b c d) = Four a b c (f d)
+
+instance (Arbitrary a, Arbitrary b, Arbitrary c, Arbitrary d) => Arbitrary (Four a b c d) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        c <- arbitrary
+        d <- arbitrary
+        return $ Four a b c d
+
+type FourIdent = Four Int Int Int Int
+type FourComp = FourIdent -> IntToString -> StringToInt -> Bool
 
 
 -- 7.
 data Four' a b = Four' a a a b
+    deriving (Eq, Show)
+
+instance Functor (Four' a) where
+    fmap f (Four' a b c d) = Four' a b c (f d)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Four' a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        return $ Four' a a a b
+
+type Four'Ident = Four' Int Int
+type Four'Comp = Four'Ident -> IntToString -> StringToInt -> Bool
 
 
 -- 8. Can you implement one for this type? Why? Why not?
 data Trivial = Trivial
+-- We cannot implement a Functor instance for this type because it has kind *.
+-- A type must have at least kind * -> * to have a Functor Instance
 
 
 -- Doing these exercises is critical to understanding how Functors work,
@@ -135,4 +178,19 @@ main = do
     putStrLn "Exercise 4: Three"
     quickCheck (functorIdentity :: ThreeIdent -> Bool)
     quickCheck (functorCompose :: ThreeComp)
+    putStrLn ""
+
+    putStrLn "Exercise 5: Three'"
+    quickCheck (functorIdentity :: Three'Ident -> Bool)
+    quickCheck (functorCompose :: Three'Comp)
+    putStrLn ""
+
+    putStrLn "Exercise 6: Four"
+    quickCheck (functorIdentity :: FourIdent -> Bool)
+    quickCheck (functorCompose :: FourComp)
+    putStrLn ""
+
+    putStrLn "Exercise 7: Four'"
+    quickCheck (functorIdentity :: Four'Ident -> Bool)
+    quickCheck (functorCompose :: Four'Comp)
     putStrLn ""
