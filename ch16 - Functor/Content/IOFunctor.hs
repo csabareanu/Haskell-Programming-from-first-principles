@@ -11,10 +11,12 @@ getInt = fmap read getLine
 
 meTooIsm :: IO String
 meTooIsm = do
-    input <- getLine
-    return (input ++ " and me too!")
+    input <- getLine  -- input is String type
+    return (input ++ " and me too!") -- wraps String in IO String type
 
 bumpIt :: IO Int
 bumpIt = do
-    intVal <- getInt
-    return (intVal + 1)
+    intVal <- getInt -- intVal is Int type
+    return (intVal + 1) -- wraps Int in IO Int type
+
+-- it is more shorter and clearer to apply fmap for the 2 above functions
