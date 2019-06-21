@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
+
 module Chapter_ex where
 
 import GHC.Arr
@@ -148,6 +149,7 @@ instance Functor (EvilGoateeConst a) where
 
 
 --5. Do you need something extra to make the instance work?
+-- f must have a functor instance to fmap over it
 data LiftItOut f a =
     LiftItOut (f a)
     deriving Show
@@ -160,20 +162,58 @@ instance Functor f => Functor (LiftItOut f) where   -- *Chapter_ex> :k LiftItOut
 -- 6.
 data Parappa f g a =
     DaWrappa (f a) (g a)
+    deriving Show
+
+instance (Functor f, Functor g) => Functor (Parappa f g) where
+    fmap f (DaWrappa fa ga) = DaWrappa (fmap f fa) (fmap f ga)
+
+-- *Chapter_ex> fmap (+1) (DaWrappa (Just 1) Nothing)
+-- DaWrappa (Just 2) Nothing
+-- *Chapter_ex> fmap (+1) (DaWrappa (Just 1) (Just 5))
+-- DaWrappa (Just 2) (Just 6)
+-- *Chapter_ex> fmap (+1) (DaWrappa (Just 1) (Right 3))
+-- DaWrappa (Just 2) (Right 4)
+-- *Chapter_ex> fmap (+1) (DaWrappa (Just 1) (Left "error"))
+-- DaWrappa (Just 2) (Left "error")
+
 
 -- 7. Don’t ask for more typeclass instances than you need. You can
 -- let GHC tell you what to do.
 data IgnoreOne f g a b =
     IgnoringSomething (f a) (g b)
+    deriving Show
+
+instance Functor g => Functor (IgnoreOne f g a) where
+    fmap f (IgnoringSomething fa gb) = IgnoringSomething fa (fmap f gb)
+
+-- *Chapter_ex> fmap (+1) (IgnoringSomething (Just 1) (Left 1))
+-- IgnoringSomething (Just 1) (Left 1)
+-- *Chapter_ex> fmap (+1) (IgnoringSomething (Just 1) (Right 1))
+-- IgnoringSomething (Just 1) (Right 2)
+
+
 -- 8.
 data Notorious g o a t =
     Notorious (g o) (g a) (g t)
+    deriving Show
+
+instance Functor g => Functor (Notorious g o a) where
+    fmap f (Notorious go ga gt) = Notorious go ga (fmap f gt)
+
+-- *Chapter_ex> fmap (+1) (Notorious (Left 1) (Right 1) (Left 1))
+-- Notorious (Left 1) (Right 1) (Left 1)
+-- *Chapter_ex> fmap (+1) (Notorious (Left 1) (Right 1) (Right 1))
+-- Notorious (Left 1) (Right 1) (Right 2)
 
 
 -- 9. You’ll need to use recursion.
 data List a =
     Nil
     | Cons a (List a)
+
+instance Functor List where
+    fmap _ Nil               = Nil
+    fmap f (Cons a (List a')) = Cons (f a) (fmap f (List a'))
 
 
 --10. A tree of goats forms a Goat-Lord, fearsome poly-creature.
