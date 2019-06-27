@@ -210,10 +210,14 @@ instance Functor g => Functor (Notorious g o a) where
 data List a =
     Nil
     | Cons a (List a)
+    deriving Show
 
 instance Functor List where
     fmap _ Nil               = Nil
-    fmap f (Cons a (List a')) = Cons (f a) (fmap f (List a'))
+    fmap f (Cons head tail)  = Cons (f head) (fmap f tail)
+
+-- *Chapter_ex> fmap (+1) (Cons 1 ((Cons 2) Nil))
+-- Cons 2 (Cons 3 Nil)
 
 
 --10. A tree of goats forms a Goat-Lord, fearsome poly-creature.
@@ -221,8 +225,16 @@ data GoatLord a =
     NoGoat
     | OneGoat a
     | MoreGoats (GoatLord a) (GoatLord a) (GoatLord a)
+    deriving Show
 -- A VERITABLE HYDRA OF GOATS
 
+instance Functor GoatLord where
+    fmap _ NoGoat = NoGoat
+    fmap f (OneGoat l) = OneGoat (f l)
+    fmap f (MoreGoats l c r) = MoreGoats (fmap f l) (fmap f c) (fmap f r)
+
+-- *Chapter_ex> fmap (+1) (MoreGoats (NoGoat) (OneGoat 1) (MoreGoats (NoGoat) (OneGoat 2) (OneGoat 4)))
+-- MoreGoats NoGoat (OneGoat 2) (MoreGoats NoGoat (OneGoat 3) (OneGoat 5))
 
 --11. You’ll use an extra functor for this one, although your solution
 --might do it monomorphically without using fmap.
