@@ -242,3 +242,13 @@ data TalkToMe a =
     Halt
     | Print String a
     | Read (String -> a)
+
+instance (Show a) => Show (TalkToMe a) where
+    show Halt             = "Halt"
+    show (Print a b)      = "Print " ++ a ++ " " ++ show b
+    show (Read g)         = "Read"
+
+instance Functor TalkToMe where
+    fmap _ Halt = Halt
+    fmap f (Print s a) = Print s (f a)
+    fmap f (Read g) = Read (fmap f g)
