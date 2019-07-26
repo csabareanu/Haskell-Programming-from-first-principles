@@ -34,3 +34,38 @@ module Defining where
 -- ($) :: (a -> b) -> a -> b
 -- (<$>) :: (a -> b) -> f a -> f b
 -- (<*>) :: f (a -> b) -> f a -> f b
+
+
+-- With Applicative, we have a Monoid for our structure and function
+-- application for our values!
+
+-- mappend :: f             f      f
+-- $       ::   (a -> b)      a      b
+-- (<*>)   :: f (a -> b) -> f a -> f b
+
+
+-- -- List
+-- [(*2), (*3)] <*> [4, 5]
+
+-- =
+-- [2 * 4, 2 * 5, 3 * 4, 3 * 5]
+
+-- -- reduced
+-- [8,10,12,15]
+
+
+
+-- So what was (a -> b) enriched with in f (a -> b) -> f a -> f
+-- b? In this case, “list-ness”. Although the actual application of each
+-- (a -> b) to a value of type 𝑎 is quite ordinary, we now have a list of
+-- functions rather than a single function as would be the case if it was
+-- just the List Functor.
+
+-- Prelude> Just (*2) <*> Just 2
+-- Just 4
+-- Prelude> Just (*2) <*> Nothing
+-- Nothing
+-- Prelude> Nothing <*> Just 2
+-- Nothing
+-- Prelude> Nothing <*> Nothing
+-- Nothing
