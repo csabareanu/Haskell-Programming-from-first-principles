@@ -30,6 +30,9 @@ tupled :: Maybe (Integer, Integer) -- Just (6,5)
 tupled = fmap (,) y <*> z
 -- *Short> Just ((,) 6) <*> (Just 5)
 -- Just (6,5)
+--tupled' :: Maybe (Integer, Integer)
+tupled' = pure (,) <*> y <*> z
+-- fmap f x = pure f <*> x
 
 
 
@@ -57,4 +60,46 @@ yyy = lookup 2 $ zip xs ys  -- Just 5
 -- summed :: Maybe Integer
 -- summed = sum $ (,) x y
 -- summed = fmap sum $ (,) xxx <*> yyy
-summed =  sum $ (,) x y
+summed =  fmap sum $ fmap (,) xxx <*> yyy
+
+
+----------------------------------------------------
+
+-- const <$> Identity [1, 2, 3] <*> Identity [9, 9, 9]
+-- Identity [1,2,3]
+-- Write an Applicative instance for Identity.
+
+newtype Identity a = Identity a
+    deriving (Eq, Ord, Show)
+
+instance Functor Identity where
+    fmap f (Identity a) = Identity (f a)
+
+instance Applicative Identity where
+    pure                            = Identity
+    (<*>) (Identity f) (Identity a) = Identity (f a)
+
+
+-------------------------------------------------------
+-- *Main> Constant (Sum 1) <*> Constant (Sum 2)
+-- Constant {getConstant = Sum {getSum = 3}
+
+-- Prelude> Constant undefined <*> Constant (Sum 2)
+-- Constant (Sum {getSum = *** Exception: Prelude.undefined
+
+-- *Main> pure 1
+-- 1
+-- *Main> pure 1 :: Constant String Int
+-- Constant {getConstant = ""}
+
+-- Write an Applicative instance for Constant.
+newtype Constant a b =
+    Constant { getConstant :: a }
+    deriving (Eq, Ord, Show)
+
+instance Functor (Constant a) where
+    fmap _ (Constant x)  = Constant x
+
+instance Monoid a => Applicative (Constant a) where
+    pure _ = Constant mempty
+    (<*>) (Constant a) (Constant b) = Constant (a <> b)
