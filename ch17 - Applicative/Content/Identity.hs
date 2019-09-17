@@ -6,7 +6,7 @@ module Identity where
 -- (<*>) ::        f (a -> b) ->        f a ->        f b
 -- (<*>) :: Identity (a -> b) -> Identity a -> Identity b
 
--- pure :: a -> f a
+-- pure :: a ->        f a
 -- pure :: a -> Identity a
 
 -- Having an extra structure around the values lifts some function from mapping over the original structure to mapping over Identity

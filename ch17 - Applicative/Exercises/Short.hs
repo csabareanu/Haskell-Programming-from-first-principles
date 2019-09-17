@@ -31,8 +31,8 @@ tupled = fmap (,) y <*> z
 -- *Short> Just ((,) 6) <*> (Just 5)
 -- Just (6,5)
 --tupled' :: Maybe (Integer, Integer)
-tupled' = pure (,) <*> y <*> z
--- fmap f x = pure f <*> x
+tupled' =     pure (,) <*> y <*> z
+-- fmap f x = pure   f <*> x
 
 
 
@@ -48,6 +48,7 @@ max' = max
 maxed :: Maybe Int
 -- maxed = max' x y
 maxed = fmap max' xx <*> yy
+maxed' = max' <$> xx <*> yy
 
 -- 4.
 xs = [1, 2, 3]
@@ -57,7 +58,7 @@ xxx = lookup 3 $ zip xs ys  -- Just 6
 yyy :: Maybe Integer
 yyy = lookup 2 $ zip xs ys  -- Just 5
 
--- summed :: Maybe Integer
+summed :: Maybe Integer
 -- summed = sum $ (,) x y
 -- summed = fmap sum $ (,) xxx <*> yyy
 summed =  fmap sum $ fmap (,) xxx <*> yyy
@@ -101,5 +102,5 @@ instance Functor (Constant a) where
     fmap _ (Constant x)  = Constant x
 
 instance Monoid a => Applicative (Constant a) where
-    pure _ = Constant mempty
+    pure  _                         = Constant mempty
     (<*>) (Constant a) (Constant b) = Constant (a <> b)
