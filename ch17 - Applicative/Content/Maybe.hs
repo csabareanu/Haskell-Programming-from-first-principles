@@ -40,3 +40,12 @@ mkPerson n a =
                 Nothing -> Nothing
                 Just a' ->
                     Just $ Person n' a'
+
+
+-- *Maybe> :t fmap Person (mkName "Babe")
+-- fmap Person (mkName "Babe") :: Maybe (Address -> Person) -- needs a function wrapped in Maybe
+-- *Maybe> fmap Person (mkName "Babe") <*> (mkAddress "Aleea Trestiana")
+-- Just (Person (Name "Babe") (Address "Aleea Trestiana"))
+
+mkPerson' :: String -> String -> Maybe Person
+mkPerson' n a = Person <$> mkName n <*> mkAddress a
