@@ -11,12 +11,16 @@ data List a =
 -- Remember what you wrote for the List Functor:
 
 instance Functor List where
-    fmap = undefined
+    fmap _ Nil              = Nil
+    fmap f (Cons head tail) = Cons (f head) (fmap f tail)
 
 -- Writing the List Applicative is similar.
+-- a naive version
 instance Applicative List where
-    pure = undefined
-    (<*>) = undefined
+    pure f                             = Cons f Nil
+    (<*>) _           Nil              = Nil
+    (<*>) Nil         _                = Nil
+    (<*>) (Cons f fs) (Cons head tail) = pure (f head) `append` (fmap f tail) `append` ((<*>) fs (pure head)) `append` ((<*>) fs tail)
 
 -- Expected result:
 -- Prelude> let functions = Cons (+1) (Cons (*2) Nil)
@@ -25,17 +29,61 @@ instance Applicative List where
 -- Cons 2 (Cons 3 (Cons 2 (Cons 4 Nil)))
 
 -- In case you get stuck, use the following functions and hints.
--- append :: List a -> List a -> List a
--- append Nil ys = ys
--- append (Cons x xs) ys = Cons x $ xs `append` ys
--- fold :: (a -> b -> b) -> b -> List a -> b
--- fold _ b Nil = b
--- fold f b (Cons h t) = f h (fold f b t)
--- concat' :: List (List a) -> List a
--- concat' = fold append Nil
+append :: List a -> List a -> List a
+append Nil ys = ys
+append (Cons x xs) ys = Cons x $ xs `append` ys
+
+-- f ~ append , b ~ Nil
+fold :: (a -> b -> b) -> b -> List a -> b
+fold _ b Nil        = b
+fold f b (Cons h t) = f h (fold f b t)
+
+
+-- List (List a) is:
+-- Cons 5 (Cons 4 (Cons 3 Nil)) -> [5,4,3] :: Num a => List a
+-- Cons 5 (Cons (Cons 4 (Cons 2 Nil)) (Cons 1 Nil)) :: (Num a, Num (List a)) => List (List a)
+
+concat' :: List (List a) -> List a
+concat' = fold append Nil
 -- -- write this one in terms of concat' and fmap
--- flatMap :: (a -> List b) -> List a -> List b
--- flatMap f as = undefined
+
+
+-- *ListApplicative> flatMap (\x -> Cons x (Cons 9 Nil)) (Cons 1 (Cons 2 (Cons 3 Nil)))
+-- Cons 1 (Cons 9 (Cons 2 (Cons 9 (Cons 3 (Cons 9 Nil)))))
+-- *ListApplicative> fmap (\x -> Cons x (Cons 9 Nil)) (Cons 1 (Cons 2 (Cons 3 Nil)))
+-- Cons (Cons 1 (Cons 9 Nil)) (Cons (Cons 2 (Cons 9 Nil)) (Cons (Cons 3 (Cons 9 Nil)) Nil))
+
+flatMap :: (a -> List b) -> List a -> List b
+flatMap f = concat' . fmap f
+-- *ListApplicative> fmap (\x -> Cons x (Cons 9 Nil)) (Cons 1 (Cons 2 (Cons 3 Nil)))
+-- Cons (Cons 1 (Cons 9 Nil)) (Cons (Cons 2 (Cons 9 Nil)) (Cons (Cons 3 (Cons 9 Nil)) Nil))
+-- concat' ( Cons (Cons 1 (Cons 9 Nil)) (Cons (Cons 2 (Cons 9 Nil)) (Cons (Cons 3 (Cons 9 Nil)) Nil)) ) ( -> List a )
+-- fold append Nil ( Cons (Cons 1 (Cons 9 Nil)) (Cons (Cons 2 (Cons 9 Nil)) (Cons (Cons 3 (Cons 9 Nil)) Nil)) )
+--                   Cons       HEAD                                    TAIL
+-- append (Cons 1 (Cons 9 Nil)) (fold append Nil (Cons (Cons 2 (Cons 9 Nil)) (Cons (Cons 3 (Cons 9 Nil)) Nil)) )
+--                                                Cons        HEAD                       TAIL
+-- append (Cons 1 (Cons 9 Nil)) (append (Cons 2 (Cons 9 Nil)) (fold append Nil (Cons (Cons 3 (Cons 9 Nil)) Nil)) )
+--                                                                              Cons        HEAD           TAIL
+-- append (Cons 1 (Cons 9 Nil)) (append (Cons 2 (Cons 9 Nil)) (append (Cons 3 (Cons 9 Nil)) fold append Nil Nil )))
+ --append (Cons 1 (Cons 9 Nil)) (append (Cons 2 (Cons 9 Nil)) (append (Cons 3 (Cons 9 Nil)) Nil))
+ --                                                                         x       xs
+ -- append (Cons 1 (COns 9 Nil)) (append (Cons 2 (Cons 9 Nil)) (Cons 3 $ (Cons 9 Nil) `append` Nil))
+ --                                                                            x  xs
+--  append (Cons 1 (Cons 9 Nil)) (append (Cons 2 (Cons 9 Nil)) (Cons 3 $ Cons 9 $ Nil `append` Nil)
+--                                                                                     Nil
+-- append (Cons 1 (Cons 9 Nil)) (append (Cons 2 (Cons 9 Nil)) (Cons 3 $ Cons 9 Nil)
+-- append (Cons 1 (Cons 9 Nil)) (append (Cons 2 (Cons 9 Nil)) (Cons 3 (Cons 9 Nil))
+-------
+-- append (Cons 2 (Cons 9 Nil)) (Cons 3 (Cons 9 Nil)
+--              x      xs                ys
+-- Cons 2 $ (Cons 9 Nil) `append` (Cons 3 (Cons 9 Nil))
+--                       x  xs                  ys
+-- Cons 2 $ Cons 9 $ Nil `append` (Cons 3 (Cons 9 Nil))
+-- Cons 2 $ Cons 9 $ (Cons 3 (Cons 9 Nil))
+-- Cons 2 (Cons 9 (Cons 3 (Cons 9 Nil)))
+
+--- etc etc etc.
+
 -- Use the above and try using flatMap and fmap without explicitly
 -- pattern-matching on Cons cells. You’ll still need to handle the Nil
 -- cases.
