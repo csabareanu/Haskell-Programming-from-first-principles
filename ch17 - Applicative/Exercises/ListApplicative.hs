@@ -16,11 +16,11 @@ instance Functor List where
 
 -- Writing the List Applicative is similar.
 -- a naive version
-instance Applicative List where
-    pure f                             = Cons f Nil
-    (<*>) _           Nil              = Nil
-    (<*>) Nil         _                = Nil
-    (<*>) (Cons f fs) (Cons head tail) = pure (f head) `append` (fmap f tail) `append` ((<*>) fs (pure head)) `append` ((<*>) fs tail)
+-- instance Applicative List where
+--     pure f                             = Cons f Nil
+--     (<*>) _           Nil              = Nil
+--     (<*>) Nil         _                = Nil
+--     (<*>) (Cons f fs) (Cons head tail) = pure (f head) `append` (fmap f tail) `append` ((<*>) fs (pure head)) `append` ((<*>) fs tail)
 
 -- Expected result:
 -- Prelude> let functions = Cons (+1) (Cons (*2) Nil)
@@ -95,3 +95,10 @@ flatMap f = concat' . fmap f
 -- [1,9,2,9,3,9]
 -- Applicative instances, unlike Functors, are not guaranteed to have a
 -- unique implementation for a given datatype.
+
+
+instance Applicative List where
+    pure f                             = Cons f Nil
+    (<*>) _           Nil              = Nil
+    (<*>) Nil         _                = Nil
+    (<*>) fs          xs               = flatMap (`fmap` xs) fs
