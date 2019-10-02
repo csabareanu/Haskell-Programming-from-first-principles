@@ -1,0 +1,28 @@
+1. Applicative is a typeclass in Haskell which you could think of
+as the Jonathan Taylor Thomas to Functor and Monad’s Taran
+Noah Smith and Zachery Ty Bryan. Applicative can be thought
+of characterizing monoidal functors in Haskell. For a Haskeller’s
+purposes, it’s a way to functorially apply a function which is
+embedded in structure 𝑓 of the same type as the value you’re
+mapping it over.
+fmap :: (a -> b) -> f a -> f b
+(<*>) :: f (a -> b) -> f a -> f b
+
+------------------------------
+17.11 Follow-up resources
+-------------------------------
+
+
+1. Tony Morris; Nick Partridge; Validation library
+http://hackage.haskell.org/package/validation
+2. Conor McBride; Ross Paterson; Applicative Programming with
+Effects
+http://staff.city.ac.uk/~ross/papers/Applicative.html
+3. Jeremy Gibbons; Bruno C. d. S. Oliveira; Essence of the Iterator
+Pattern
+4. Ross Paterson; Constructing Applicative Functors
+http://staff.city.ac.uk/~ross/papers/Constructors.html
+5. Sam Lindley; Philip Wadler; Jeremy Yallop; Idioms are oblivious,
+arrows are meticulous, monads are promiscuous.
+Note: Idiom means applicative functor and is a useful search
+term for published work on applicative functors.
