@@ -73,6 +73,7 @@ instance (Arbitrary a) => Arbitrary (Identity a) where
 instance (Eq a) => EqProp (Identity a) where
     (=-=) = eq
 
+-- testing
 
 
 -- 2.
@@ -119,20 +120,100 @@ instance (Eq a, Eq b) => EqProp (Two a b) where
 
 
 
--- 4. data Three a b c = Three a b c
+-- 4.
+data Three a b c =
+    Three a b c
+    deriving (Eq, Show)
+
+instance Functor (Three a b) where
+    fmap f (Three a b c) = Three a b (f c)
+
+instance (Monoid a, Monoid b) => Applicative (Three a b) where
+    pure                              = Three mempty mempty
+    (<*>) (Three a b f) (Three c d e) = Three (a <> c) (b <> d) (f e)
+
+instance (Arbitrary a, Arbitrary b, Arbitrary c) => Arbitrary (Three a b c) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        c <- arbitrary
+        return $ Three a b c
+
+instance (Eq a, Eq b, Eq c) => EqProp (Three a b c) where
+    (=-=) = eq
 
 
 
 -- 5. data Three' a b = Three' a b b
+data Three' a b =
+    Three' a b b
+    deriving (Eq, Show)
+
+instance Functor (Three' a) where
+    fmap f (Three' a b c) = Three' a (f b) (f c)
+
+instance (Monoid a) => Applicative (Three' a) where
+    pure a                              = Three' mempty a a
+    (<*>) (Three' a f g) (Three' b c d) = Three' (a <> b) (f c) (g d)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Three' a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        c <- arbitrary
+        return $ Three' a b c
+
+instance (Eq a, Eq b) => EqProp (Three' a b) where
+    (=-=) = eq
 
 
 
 -- 6. data Four a b c d = Four a b c d
 
+data Four a b c d =
+    Four a b c d
+    deriving (Eq, Show)
+
+instance Functor (Four a b c) where
+    fmap f (Four a b c d) = Four a b c (f d)
+
+instance (Monoid a, Monoid b, Monoid c) => Applicative (Four a b c) where
+    pure                                = Four mempty mempty mempty
+    (<*>) (Four a b c f) (Four d e i j) = Four (a <> d) (b <> e) (c <> i) (f j)
+
+instance (Arbitrary a, Arbitrary b, Arbitrary c, Arbitrary d) => Arbitrary (Four a b c d) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        c <- arbitrary
+        d <- arbitrary
+        return $ Four a b c d
+
+instance (Eq a, Eq b, Eq c, Eq d) => EqProp (Four a b c d) where
+    (=-=) = eq
+
 
 
 -- 7. data Four' a b = Four' a a a b
+data Four' a b =
+    Four' a a a b
+    deriving (Eq, Show)
 
+instance Functor (Four' a) where
+    fmap f (Four' a b c d) = Four' a b c (f d)
+
+instance (Monoid a) => Applicative (Four' a) where
+    pure                                = Four' mempty mempty mempty
+    (<*>) (Four' a b c f) (Four' d e i j) = Four' (a <> d) (b <> e) (c <> i) (f j)
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Four' a b) where
+    arbitrary = do
+        a <- arbitrary
+        b <- arbitrary
+        return $ Four' a a a b
+
+instance (Eq a, Eq b) => EqProp (Four' a b) where
+    (=-=) = eq
 
 main :: IO ()
 main = do
@@ -142,6 +223,14 @@ main = do
     quickBatch $ applicative $ Pair ("a","b","c") ("a","b","c")
     putStrLn "\nTesting 3. Two"
     quickBatch $ applicative $ Two ("a","b","c") ("a","b","c")
+    putStrLn "\nTesting 4. Three"
+    quickBatch $ applicative $ Three ("a","b","c") ("a","b","c") ("a","b","c")
+    putStrLn "\nTesting 5. Three'"
+    quickBatch $ applicative $ Three' ("a","b","c") ("a","b","c") ("a","b","c")
+    putStrLn "\nTesting 6. Four"
+    quickBatch $ applicative $ Four ("a","b","c") ("a","b","c") ("a","b","c") ("a","b","c")
+    putStrLn "\nTesting 7. Four'"
+    quickBatch $ applicative $ Four' ("a","b","c") ("a","b","c") ("a","b","c") ("a","b","c")
 
 
 ------------------
