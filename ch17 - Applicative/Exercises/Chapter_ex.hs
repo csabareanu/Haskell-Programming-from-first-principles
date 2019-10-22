@@ -1,6 +1,7 @@
 module Chapter_ex where
 
 import Control.Applicative (liftA3)
+import Data.Monoid
 import Test.QuickCheck
 import Test.QuickCheck.Checkers
 import Test.QuickCheck.Classes
@@ -203,7 +204,7 @@ instance Functor (Four' a) where
     fmap f (Four' a b c d) = Four' a b c (f d)
 
 instance (Monoid a) => Applicative (Four' a) where
-    pure                                = Four' mempty mempty mempty
+    pure                                  = Four' mempty mempty mempty
     (<*>) (Four' a b c f) (Four' d e i j) = Four' (a <> d) (b <> e) (c <> i) (f j)
 
 instance (Arbitrary a, Arbitrary b) => Arbitrary (Four' a b) where
@@ -240,8 +241,17 @@ main = do
 -- Remember the vowels and stops exercise in folds? Reimplement the
 -- combos function using liftA3 from Control.Applicative.
 
+-- Write a function that takes inputs from stops and vowels
+-- and makes 3-tuples of all possible stop-vowel-stop combina-
+-- tions. These will not all correspond to real words in English,
+-- although the stop-vowel-stop pattern is common enough
+-- that many of them will.
+
+
 stops, vowels :: String
 stops = "pbtdkg"
 vowels = "aeiou"
+
 combos :: [a] -> [b] -> [c] -> [(a, b, c)]
-combos = undefined
+-- combos = undefined
+combos l1 l2 l3 = liftA3 (,,) l1 l2 l3
