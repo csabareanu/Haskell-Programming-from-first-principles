@@ -1,0 +1,47 @@
+1. The terms argument and parameter are often used interchangeably.
+However, it is worthwhile to understand the distinction.
+A parameter, or formal parameter, represents a value that will be
+passed to the function when the function is called. Thus, parameters
+are usually variables. An argument is an input value the
+function is applied to. A function’s parameter is bound to the
+value of an argument when the function is applied to that argument.
+For example, in f x = x + 2 which takes an argument
+and returns that value added to 2, 𝑥 is the one parameter of our
+function. We run the code by applying 𝑓 to some argument. If
+the argument we passed to the parameter 𝑥 were 2, our result
+would be 4. However, arguments can themselves be variables or
+be expressions that include variables, thus the distinction is not
+always clear. When we use “parameter” in this book, it will always
+be referring to formal parameters, usually in a type signature,
+but we’ve taken the liberty of using “argument” somewhat more
+loosely.
+2. An expression is a combination of symbols that conforms to syntactic
+rules and can be evaluated to some result. In Haskell, an
+expression is a well-structured combination of constants, variables,
+and functions. While irreducible constants are technically
+expressions, we usually refer to those as “values”, so we usually
+mean “reducible expression” when we use the term expression.
+3. A redex is a reducible expression.
+4. A value is an expression that cannot be reduced or evaluated any
+further. 2 * 2 is an expression, but not a value, whereas what it
+evaluates to, 4, is a value.
+5. A function is a mathematical object whose capabilities are limited
+to being applied to an argument and returning a result. Functions
+can be described as a list of ordered pairs of their inputs and the
+resulting outputs, like a mapping. Given the function f x = x
++ 2 applied to the argument 2, we would have the ordered pair
+(2, 4) of its input and output.
+6. Infix notation is the style used in arithmetic and logic. Infix means
+that the operator is placed between the operands or arguments.
+An example would be the plus sign in an expression like 2 + 2.
+7. Operators are functions that are infix by default. In Haskell, operators
+must use symbols and not alphanumeric characters.
+8. Syntactic sugar is syntax within a programming language designed
+to make expressions easier to write or read.
+
+2.15 Follow-up resources
+1. Haskell wiki article on Let vs. Where
+https://wiki.haskell.org/Let_vs._Where
+2. How to desugar Haskell code; Gabriel Gonzalez
+http://www.haskellforall.com/2014/10/how-to-desugar-haskell-code.
+html

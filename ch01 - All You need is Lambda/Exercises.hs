@@ -1,0 +1,40 @@
+--------------------------------
+-- 1.11 Exercises
+--------------------------------
+
+-- We’re going to do the following exercises a bit differently than what
+-- you’ll see in the rest of the book, as we will be providing some answers
+-- and explanations for the questions below.
+-------------------------------------------------------------------
+-- Combinators Determine if each of the following are combinators
+-- or not.
+-------------------------------------------------------------------
+-- 1. 𝜆𝑥.𝑥𝑥𝑥           YES
+-- 2. 𝜆𝑥𝑦.𝑧𝑥           NO
+-- 3. 𝜆𝑥𝑦𝑧.𝑥𝑦(𝑧𝑥)      YES
+-- 4. 𝜆𝑥𝑦𝑧.𝑥𝑦(𝑧𝑥𝑦)     YES
+-- 5. 𝜆𝑥𝑦.𝑥𝑦(𝑧𝑥𝑦)      NO
+
+-------------------------------------------------------------------------
+-- Normal form or diverge? Determine if each of the following can be
+-- reduced to a normal form or if they diverge.
+-------------------------------------------------------------------------
+-- 1. 𝜆𝑥.𝑥𝑥𝑥           N.F.
+-- 2. (𝜆𝑧.𝑧𝑧)(𝜆𝑦.𝑦𝑦)   [z:=\y.yy] = (\y.yy)(\y.yy) [y:=\y.yy] (\y.yy)(\y.yy) ..... DIVERGE
+-- 3. (𝜆𝑥.𝑥𝑥𝑥)𝑧        [x:=z] = zzz            N.F.
+
+-------------------------------------------------------------------------
+-- Beta reduce Evaluate (that is, beta reduce) each of the following
+-- expressions to normal form. We strongly recommend writing out the
+-- steps on paper with a pencil or pen.
+--------------------------------------------------------------------------
+-- 1. (𝜆𝑎𝑏𝑐.𝑐𝑏𝑎)𝑧𝑧(𝜆𝑤𝑣.𝑤)
+-- (\a.\b.\c.cba)zz(\wv.w) [a:=z] = (\b.\c.cbz)(z)(\w.\v.w) [b:=z] = (\c.czz)(\w.\v.w) [c:=\w.\v.w] = (\w.\v.w)zz [w:=z] = \v.z(z) = z
+-- 2. (𝜆𝑥.𝜆𝑦.𝑥𝑦𝑦)(𝜆𝑎.𝑎)𝑏 [x:=\a.a] = (\y.(\a.a)yy))(b) [y:=b] = (\a.a)(b)b [a:=b] = bb
+-- 3. (𝜆𝑦.𝑦)(𝜆𝑥.𝑥𝑥)(𝜆𝑧.𝑧𝑞) [y=\x.xx] = (\x.xx)(\z.zq) [x:=\z.zq] = (\z.zq)(\z.zq) [z:=\z.zq] = \z.zq(q) [z:=q] = qq
+-- 4. (𝜆𝑧.𝑧)(𝜆𝑧.𝑧𝑧)(𝜆𝑧.𝑧𝑦) [z:=\z.zz] = \z.zz(\z.zy) [z:=\z.zy] = (\z.zy)(\z.zy) [z:=\z.zy] = \z.zy(y) [z:=y] = yy
+-- Hint: alpha equivalence.
+-- 5. (𝜆𝑥.𝜆𝑦.𝑥𝑦𝑦)(𝜆𝑦.𝑦)𝑦 [x:=\y.y] = (\y.(\y.y)yy)(y) [y:=y] = (\y.y)(y)y [y:=y] = yy
+-- 6. (𝜆𝑎.𝑎𝑎)(𝜆𝑏.𝑏𝑎)𝑐  [a:=\b.ba] = (\b.ba)(\b.ba)(c) [b:=\b.ba] = (\b.ba)(a)(c) [b:=a] = aac
+-- 7. (𝜆𝑥𝑦𝑧.𝑥𝑧(𝑦𝑧))(𝜆𝑥.𝑧)(𝜆𝑥.𝑎) = (\x.\y.\z.xz(yz))(\x.z)(\x.a)  [x:=\x.z] = (\y.\z.(\x.z)z(yz))(\x.a) [y:=\x.a] = \z.(\x.z)z((\x.a)z)
+--  [x:=z] = \z.z((\x.a)z) [x:=z] = \z.za
