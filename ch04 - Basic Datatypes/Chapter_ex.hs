@@ -124,13 +124,56 @@ f x y = ((snd x, snd y), (fst x, fst y))
 -- F xs = w 'x' 1
 -- where w = length xs
 
+x = (+)
+g xs = x w 1
+    where w = length xs
+
 
 -- 2. This is supposed to be the identity function, id.
 -- \ X = x
+
+h x = x
+
 -- 3. When fixed, this function will return 1 from the value [1, 2, 3].
 -- Hint: you may need to refer back to the section about variables
 -- conventions in “Hello Haskell” to refresh your memory of this
 -- notation.
 -- \ x : xs -> x
+
+z (x:xs) = x 
+
 -- 4. When fixed, this function will return 1 from the value (1, 2)
 -- f (a b) = A
+
+y (a,b) = a
+
+1. Which of the following types is the type of show?
+a) show a => a -> String
+b) Show a -> a -> String
+c) Show a => a -> String
+
+c)
+
+2. Which of the following types is the type of (==)?
+a) a -> a -> Bool
+b) Eq a => a -> a -> Bool
+c) Eq a -> a -> a -> Bool
+d) Eq a => A -> Bool
+
+b)
+
+3. Which of the following types is the type of fst?
+a) (a, b) -> a
+b) b -> a
+c) (a, b) -> b
+
+a)
+
+4. Which of the following types is the type of (+)?
+a) Num a -> a -> a -> Bool
+b) Num a => a -> a -> Bool
+c) num a => a -> a -> a
+d) Num a => a -> a -> a
+e) a -> a -> a
+
+d)

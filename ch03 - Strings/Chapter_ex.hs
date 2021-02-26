@@ -65,6 +65,7 @@ module Chapter_ex where
 -- -- Return
 -- "Curry is awesome!"
 -- (++) "Curry is awesome" "!"
+-- concat ["Curry is awesome", "!"]
 
 -- b) -- Given
 -- "Curry is awesome!"
