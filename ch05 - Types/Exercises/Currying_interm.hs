@@ -82,7 +82,7 @@ module Currying_interm where
 -- e) Ord a => a
 -- f) Integer
 
--- a) (Num a, Ord a) => a
+-- d) Num a => a
 
 -- 9. If the type of kessel is (Ord a, Num b) => a -> b -> a, then
 -- the type of

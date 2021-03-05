@@ -1,5 +1,12 @@
 module Currying_examples where
 
+addStuff :: Integer -> Integer -> Integer
+addStuff a b = a + b + 5
+
+--binding variables to types
+funcIgnoreArgs :: a -> a -> a -> String
+funcIgnoreArgs x y z = "Blah"
+
 -- mapping a bool value to an integer
 nonsense :: Bool -> Integer
 nonsense True = 805

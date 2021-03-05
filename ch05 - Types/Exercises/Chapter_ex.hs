@@ -12,7 +12,7 @@
 --    54 :: Num a=>a
 -- b) head [(0,"doge"),(1,"kitteh")]
 --    (0, "doge") :: Num a => (a,[Char])
--- c) head [(0 :: Integer ,"doge"),(1,"kitteh")]
+-- c) head [(0 :: Integer ,"dostack ge"),(1,"kitteh")]
 --    (0, "doge") :: (Integer, [Char])
 -- d) if False then True else False
 --    False :: Bool
@@ -92,17 +92,17 @@
 -- in the previous example.
 -- f :: zed -> Zed -> Blah
 --      [0]    [1]     [2]
---  [0] -> fully polymorphic [1],[2] -> concrete polymorphic
+--  [0] -> fully polymorphic [1],[2] -> concrete
 
 -- 3. Categorize each component of the type signature
 -- f :: Enum b => a -> b -> C
 --               [0]  [1]  [2]
---  [0] -> fully polymorphic [1] -> constrained polymorphic [2] -> concrete polymorphic
+--  [0] -> fully polymorphic [1] -> constrained polymorphic [2] -> concrete 
 
 -- 4. Categorize each component of the type signature
 -- f :: f -> g -> C
 --     [0]  [1]  [2]
---  [0],[1] -> fully polymorphic [2] -> concrete polymorphic
+--  [0],[1] -> fully polymorphic [2] -> concrete
 
 
 ----------------------------------
@@ -346,4 +346,4 @@ xform (a, b) = (xz a, yz b)
 --4
 munge :: (x -> y) -> (y -> (w, z)) -> x -> w
 -- munge = ???
-munge f g x= fst $ (g . f) x
+munge f g x = fst $ (g . f) x
