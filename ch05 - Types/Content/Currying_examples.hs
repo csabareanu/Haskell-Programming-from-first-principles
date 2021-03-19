@@ -27,3 +27,10 @@ anonymous = \i b -> i + (nonsense b)
 -- de-sugar automatic currying
 anonymousAndManuallyNested :: Integer -> Bool -> Integer
 anonymousAndManuallyNested = \i -> \b -> i + (nonsense b)
+
+
+kessel :: (Ord a, Num b) => a -> b -> a
+kessel = undefined
+
+-- *Currying_examples> :t kessel 1 2
+-- kessel 1 2 :: (Ord a, Num a) => a

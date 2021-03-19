@@ -324,6 +324,7 @@ w = undefined
 
 e :: A -> C
 -- e = ???
+
 e = w . q
 
 
