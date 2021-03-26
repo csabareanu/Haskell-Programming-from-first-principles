@@ -30,9 +30,9 @@ instance Eq TwoIntegers where
 
 data StringOrInt = TisAnInt Int | TisAsString String
 instance Eq StringOrInt where
-    (==) (TisAnInt a) (TisAnInt b)       = a == b
-    (==) (TisAsString a) (TisAsString b) = a == b
-    (==) _ _                             = False
+    (==) (TisAnInt a)    (TisAnInt b)     = a == b
+    (==) (TisAsString a) (TisAsString b)  = a == b
+    (==) _                _               = False
 
 
 
@@ -63,9 +63,9 @@ instance (Eq a, Eq b) => Eq (Tuple a b) where
 
 data Which a = ThisOne a | ThatOne a
 instance Eq a => Eq (Which a) where
-    (==) (ThisOne x) (ThisOne y) = x == y
-    (==) (ThatOne x) (ThatOne y) = x == y
-    (==) _ _                     = False
+    (==) (ThisOne a) (ThisOne a') = a == a'
+    (==) (ThatOne a) (ThatOne a') = a == a'
+    (==) _           _            = False
 
 
 
@@ -73,8 +73,8 @@ instance Eq a => Eq (Which a) where
 -- Hello a
 ---- | Goodbye b
 
-data EitherOr a b = Hello a | GoodBye b
+data EitherOr a b = Hello a | Goodbye b
 instance (Eq a, Eq b) => Eq (EitherOr a b) where
-    (==) (Hello x) (Hello y)     = x == y
-    (==) (GoodBye x) (GoodBye y) = x == y
-    (==) _ _                     = False
+    (==) (Hello a)   (Hello a')   = a == a'
+    (==) (Goodbye b) (Goodbye b') = b == b'
+    (==) _           _            = False

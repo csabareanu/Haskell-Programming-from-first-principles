@@ -55,6 +55,17 @@ module Chapter_ex where
 -- Does it typecheck ?
 -----------------------
 
+-- Example
+x :: Int -> Int
+x blah = blah + 20
+printIt :: IO ()
+-- printIt = putStrLn (show x)
+
+-- Does not typecheck bc a function cannot have an instance of Show
+-- To typecheck we should apply an Int to the function x:
+
+printIt = putStrLn (show $ x 5)
+
 --1. Does the following code typecheck? If not, why not?
 -- data Person = Person Bool
 -- printPerson :: Person -> IO ()
@@ -65,6 +76,7 @@ module Chapter_ex where
 data Person = Person Bool deriving Show
 printPerson :: Person -> IO ()
 printPerson person = putStrLn (show person)
+
 
 
 --2. Does the following typecheck? If not, why not?
