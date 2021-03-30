@@ -2,6 +2,13 @@ module Higher_Order_Funcs where
 
 -- HOFs are functions that accept functions as args. Used to manipulate how funcs are applied to args
 
+myFlip :: (a -> b -> c) -> b -> a -> c
+myFlip f x y = f y x 
+
+myFlip' :: (a -> b -> c) -> b -> a -> c
+myFlip' f = \x y -> f y x 
+
+
 data Employee = Coder
               | Manager
               | Veep

@@ -31,7 +31,7 @@ module Chapter_ex where
 -- c) Ord a => a -> a -> Integer
 -- d) (Ord a, Num a) => a -> Bool
 
--- a)
+-- d)
 
 
 -- 4. A function with the type (a -> b) -> c
@@ -66,11 +66,16 @@ tensDigit x = d
 
 -- a) First, rewrite it using divMod .
 
+tensDigit_a :: Integral a => a -> a
 tensDigit_a x = d
     where (xLast, _) = x `divMod` 10
           (_, d)     = xLast `divMod` 10
 
+tensDigit_a2 :: Integral a => a -> a
 tensDigit_a2 x = snd . (`divMod` 10) . fst . (`divMod` 10) $ x
+
+tensDigit_b :: Integral a => a -> a
+tensDigit_b = (`mod` 10) . (`div` 10)
 
 
 -- b) Does the divMod version have the same type as the original
@@ -177,10 +182,16 @@ mainPF = do
 
 roundTripPF6 :: (Show a, Read b) => a -> b
 roundTripPF6 = read . show
+
+mainPF6 :: IO ()
 mainPF6 = do
     print (roundTripPF6 (4 :: Int) :: Double)
 
+
+-- Forcing b to be of different type than a from the type signature.
 roundTripPF6_2 :: (Show a, Integral a, Read b, Fractional b) => a -> b
 roundTripPF6_2 = read . show
+
+mainPF6_2 :: IO ()
 mainPF6_2 = do
     print (roundTripPF6_2 4)

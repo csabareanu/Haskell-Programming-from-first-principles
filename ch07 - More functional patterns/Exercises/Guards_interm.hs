@@ -19,6 +19,7 @@ module Guards_interm where
 
 
 -- 3. The following function returns
+pal :: Eq a => [a] -> Bool
 pal xs
     | xs == reverse xs = True
     | otherwise = False
@@ -41,10 +42,11 @@ pal xs
 
 
 -- 6. The following function returns
+numbers :: (Num a, Ord a, Ord b) => a -> b
 numbers x
-    | x < 0 = -1
+    | x < 0  = -1
+    | x > 0  = 1
     | x == 0 = 0
-    | x > 0 = 1
 -- a) the value of its argument plus or minus 1
 -- b) the negation of its argument
 -- c) an indication of whether its argument is a positive or negative
