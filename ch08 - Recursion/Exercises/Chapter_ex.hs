@@ -60,14 +60,14 @@ cattyConny x y = x ++ " mrow " ++ y
 
 
 -- -- fill in the types
+flippy :: String -> String -> String
 flippy = flip cattyConny
--- flippy :: String -> String -> String
 
+appedCatty :: String -> String
 appedCatty = cattyConny "woops"
--- appedCatty :: String -> String
 
+frappe :: String -> String
 frappe = flippy "haha"
--- frappe String -> String
 
 -- 1. What is the value of appedCatty "woohoo!" ? Try to determine
 -- the answer for yourself, then test in the REPL.
@@ -122,6 +122,14 @@ sumRec n
     | n == 0    = 0
     | otherwise = n + sumRec (n - 1)
 
+-- more complicated with a go function 
+sumNum :: (Eq a, Num a) => a -> a
+sumNum n = go 0 0 
+    where 
+            go c sums
+                | c == n    = sums + c
+                | otherwise = go (c + 1) (sums + c)  
+
 
 -- 3. Write a function that multiplies two integral numbers using
 -- recursive summation. The type should be (Integral a) => a
@@ -169,7 +177,7 @@ dividedBy2 num denom = go (abs num) (abs denom) 0
 mc91 :: Integral a => a -> a
 mc91 x
     | x > 100   = x - 10
-    | otherwise = mc91 $ mc91 $ x + 11
+    | otherwise = mc91 . mc91 $ x + 11
 
 -- mc91 77
 -- mc91 $ mc91 88
@@ -202,15 +210,13 @@ mc91 x
 
 
 digitToWord :: Int -> String
--- digitToWord n = undefined
 digitToWord n = intercalate "-" $ map wordNumber $ digits n
 -- or with function composition
 -- digitToWord n = intercalate "-" . map wordNumber $ digits n
 
 digits :: Int -> [Int]
--- digits n = undefined
 digits 0 = []
-digits n = digits (n `div` 10) ++ [(n `mod` 10)]
+digits n = digits (div n 10) ++ [mod n 10]
 
 -- digits 123
 -- digits 12 ++ [3]
