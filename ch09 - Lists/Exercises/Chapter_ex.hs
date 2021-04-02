@@ -18,13 +18,14 @@ import Data.Bool
 -- Prelude Data.Char> toUpper 'j'
 -- 'J'
 uppercase :: [Char] -> [Char]
-uppercase s = filter (\x -> isUpper x) s
+-- uppercase s = filter (\x -> isUpper x) s
+uppercase s = filter isUpper s
 
 -- 3. Write a function that will capitalize the first letter of a String
 -- and return the entire String. For example, if given the argument
 -- “julie,” it will return “Julie.”
 capitalize :: [Char] -> [Char]
-capitalize "" = ""
+capitalize ""       = ""
 capitalize (x : xs) = toUpper x : xs
 
 -- 4. Now make a new version of that function that is recursive such
@@ -32,7 +33,7 @@ capitalize (x : xs) = toUpper x : xs
 -- “WOOT.” The type signature won’t change, but you will want to
 -- add a base case.
 capitalizeAll :: [Char] -> [Char]
-capitalizeAll "" = ""
+capitalizeAll ""       = ""
 capitalizeAll (x : xs) = toUpper x : capitalizeAll xs
 
 -- 5. To do the final exercise in this section, we’ll need another stan-
@@ -61,18 +62,18 @@ capitalizeFirstPF = toUpper . head
 
 -- direct recursion, not using (&&)
 myAnd :: [Bool] -> Bool
-myAnd [] = True
+myAnd []     = True
 myAnd (x:xs) = if x == False then False else myAnd xs
 -- direct recursion, using (&&)
 myAnd2 :: [Bool] -> Bool
-myAnd2 [] = True
+myAnd2 []     = True
 myAnd2 (x:xs) = x && myAnd xs
 
 
 -- 1. myOr returns True if any Bool in the list is True.
 myOr :: [Bool] -> Bool
 -- myOr = undefined
-myOr [] = False
+myOr []     = False
 myOr (x:xs) = x || myOr xs
 
 
@@ -81,7 +82,7 @@ myOr (x:xs) = x || myOr xs
 myAny :: (a -> Bool) -> [a] -> Bool
 -- myAny = undefined
 -- myAny f l = myOr . map f $ l
-myAny _ [] = False
+myAny _ []     = False
 myAny f (x:xs) = if f x then True else myAny f xs
 
 -- Example for validating myAny:
@@ -99,7 +100,7 @@ myAny f (x:xs) = if f x then True else myAny f xs
 -- -- can ignore that and write the concrete
 -- -- version that works only for list.
 myElem :: Eq a => a -> [a] -> Bool
-myElem _ [] = False
+myElem _ []     = False
 myElem a (x:xs) = if a == x then True else myElem a xs
 
 myElemAny :: Eq a => a -> [a] -> Bool
@@ -114,7 +115,7 @@ myElemAny a = myAny (== a)
 -- 4. Implement myReverse.
 myReverse :: [a] -> [a]
 -- myReverse = undefined
-myReverse [] = []
+myReverse []     = []
 myReverse (x:xs) = myReverse xs ++ [x]
 
 -- Prelude> myReverse "blah"
@@ -126,14 +127,14 @@ myReverse (x:xs) = myReverse xs ++ [x]
 -- 5. squish flattens a list of lists into a list
 squish :: [[a]] -> [a]
 -- squish = undefined
-squish [] = []
+squish []     = []
 squish (x:xs) = x ++ squish xs
 
 
 -- 6. squishMap maps a function over a list and concatenates the results.
 squishMap :: (a -> [b]) -> [a] -> [b]
 -- squishMap = undefined
-squishMap _ [] = []
+squishMap _ []     = []
 squishMap f (x:xs) = f x ++ squishMap f xs
 
 -- Prelude> squishMap (\x -> [1, x, 3]) [2]
@@ -158,8 +159,8 @@ squishAgain = squishMap id
 -- -- (a -> a -> Ordering) -> [a] -> a
 -- -- if you have GHC 7.10 or newer. Seeing a pattern?
 myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
--- myMaximumBy = undefined
-myMaximumBy _ [x] = x
+myMaximumBy _ []     = error "Please provide a value"
+myMaximumBy _ [x]    = x
 myMaximumBy f (x:xs) = if(f x mmb == GT ) then x else mmb
     where mmb = myMaximumBy f xs
 
@@ -175,7 +176,7 @@ myMaximumBy f (x:xs) = if(f x mmb == GT ) then x else mmb
 -- the least element of the list based on the last value that the comparison
 -- returned LT for.
 myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
--- myMaximumBy = undefined
-myMinimumBy _ [x] = x
+myMinimumBy _ []     = error "Please provide a value"
+myMinimumBy _ [x]    = x
 myMinimumBy f (x:xs) = if(f x mmb == LT ) then x else mmb
     where mmb = myMaximumBy f xs

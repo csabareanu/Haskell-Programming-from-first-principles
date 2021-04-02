@@ -13,7 +13,7 @@ module Spines_interm where
 
 -- 2. take 1 $ [x^y | x <- [1..5], y <- [2, undefined]]
 
--- //returns 1
+-- returns 1
 
 
 -- 3. Will the following expression return a value?
@@ -24,7 +24,7 @@ module Spines_interm where
 
 -- 4. length [1, 2, undefined]
 
--- //returns 3
+-- returns 3
 
 
 -- 5. length $ [1, 2, 3] ++ undefined
@@ -34,22 +34,22 @@ module Spines_interm where
 
 -- 6. take 1 $ filter even [1, 2, 3, undefined]
 
--- //returns 2
+-- returns 2
 
 
 -- 7. take 1 $ filter even [1, 3, undefined]
 
--- // Will Blow up
+--  Will Blow up
 
 
 -- 8. take 1 $ filter odd [1, 3, undefined]
 
--- //returns 1
+-- returns 1
 
 
 -- 9. take 2 $ filter odd [1, 3, undefined]
 
--- //returns [1,3]
+-- returns [1,3]
 
 
 -- 10. take 3 $ filter odd [1, 3, undefined]

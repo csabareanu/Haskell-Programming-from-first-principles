@@ -40,12 +40,14 @@ module Ranges_interm where
 eftBool :: Bool -> Bool -> [Bool]
 -- eftBool = undefined
 eftBool s e
+    | s > e  = []
     | s == e    = [e]
     | otherwise = s : eftBool (succ s) e
 
 eftOrd :: Ordering -> Ordering -> [Ordering]
 -- eftOrd = undefined
 eftOrd s e
+    | s > e  = []
     | s == e    = [e]
     | otherwise = s : eftOrd (succ s) e
 
@@ -53,6 +55,7 @@ eftOrd s e
 eftInt :: Int -> Int -> [Int]
 -- eftInt = undefined
 eftInt s e
+    | s > e  = []
     | s == e    = [e]
     | otherwise = s : eftInt (succ s) e
 
@@ -60,11 +63,13 @@ eftInt s e
 eftChar :: Char -> Char -> [Char]
 -- eftChar = undefined
 eftChar s e
+    | s > e  = []
     | s == e    = [e]
     | otherwise = s : eftChar (succ s) e
 
 -- abstraction
-eftGen :: (Eq a, Enum a) => a -> a -> [a]
+eftGen :: (Enum a, Ord a) => a -> a -> [a]
 eftGen s e
+    | s > e  = []
     | s == e    = [e]
     | otherwise = s : eftGen (succ s) e

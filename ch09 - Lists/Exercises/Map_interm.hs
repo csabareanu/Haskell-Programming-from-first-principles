@@ -9,7 +9,7 @@ module Map_interm where
 -- 2. Will the following expression return a value?
 -- take 1 $ map (+1) [1, undefined, 3]
 
--- //returns [2]
+-- returns [2]
 
 
 -- 3. take 2 $ map (+1) [1, undefined, 3]
