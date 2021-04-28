@@ -6,7 +6,7 @@ module Folds_interm where
 -- b) foldl (flip (*)) 1 [1..5]     //120
 -- c) foldl (*) 1 [1..5]            //120
 
--- 1 a) c)
+-- 1 b) c)
 
 
 -- 2. Write out the evaluation steps for
@@ -48,7 +48,7 @@ module Folds_interm where
 -- test in your REPL:
 
 -- a) foldr (++) ["woot", "WOOT", "woot"]
--- //does not have an accumulator. For strings this is []
+-- does not have an accumulator. For strings this is []
 -- foldr (++) [] ["woot", "WOOT", "woot"]
 
 -- b) foldr max [] "fear is the little death"
@@ -75,12 +75,12 @@ module Folds_interm where
 -- foldr (||) False [False, True]
 
 -- e) foldl ((++) . show) "" [1..5]
--- // ((++) . show ) first arg must be an int and the second one a Char but we have the other way around.
+--  ((++) . show ) first arg must be an int and the second one a Char but we have the other way around.
 -- foldl (flip ((++) . show)) "" [1..5]
 
 -- f) foldr const 'a' [1..5]
 -- (a -> b -> b) -> b -> [a] -> b
--- //does not typecheck. The function does not return an element of type b (Char).
+-- does not typecheck. The function does not return an element of type b (Char).
 -- foldr const 'a' [1..3]
 -- (const (1) (foldr const 'a' [2,3]))
 -- (const 1 (const 2 (foldr const 'a' [3])))

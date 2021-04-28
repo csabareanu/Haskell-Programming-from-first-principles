@@ -185,8 +185,10 @@ squish = foldr ((++)) []
 
 -- 8. squishMap maps a function over a list and concatenates the results.
 squishMap :: (a -> [b]) -> [a] -> [b]
--- squishMap = undefined
 squishMap f = foldr ((++) . f) []
+
+squishMap' :: (a -> [b]) -> [a] -> [b]
+squishMap' f = foldr (\a b -> (f a) ++ b) [] 
 
 -- Prelude> squishMap (\x -> [1, x, 3]) [2]
 -- [1,2,3]
