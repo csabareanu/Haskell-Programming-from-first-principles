@@ -56,6 +56,9 @@ allJamCount = map nr allJam
 sumJars :: [JamJars] -> Int
 sumJars = sum . map nr
 
+sumJars' :: [JamJars] -> Int
+sumJars' = foldr (\a b -> nr a + b) 0
+
 
 -- 7. Write a function that will tell you which row has the most jars of
 -- jam in it. It should return a result like this, though the fruit and
@@ -105,3 +108,9 @@ sortedJamsQuantity = sortBy (\(Jam _ k) (Jam _ k') -> compare k k') allJam
 
 groupedJamsName :: [[JamJars]]
 groupedJamsName = groupBy (\(Jam _ k) (Jam _ k') -> k == k') allJam
+
+groupFruit :: JamJars -> JamJars -> Bool
+groupFruit x y = fruit x == fruit y
+
+groupFruits :: [[JamJars]]
+groupFruits = groupBy groupFruit sortedJamsName

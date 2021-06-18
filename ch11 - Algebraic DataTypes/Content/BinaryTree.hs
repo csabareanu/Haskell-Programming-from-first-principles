@@ -81,3 +81,19 @@ main = do
     testPreorder
     testInorder
     testPostorder
+
+
+foldTree :: (a -> b -> b) -> b -> BinaryTree a -> b
+foldTree f acc t = foldr f acc (inorder t)  
+
+-- *Newss> foldTree (+) 0 testTree 
+-- 6
+
+-- Using the foldTree you just wrote, rewrite mapTree using foldTree.
+-- The absence of an Ord constraint is intentional, you don’t need to use
+-- the insert function.
+mapTree' :: (a -> b)
+    -> BinaryTree a
+    -> BinaryTree b
+mapTree' f bt =
+    foldTree undefined undefined undefined

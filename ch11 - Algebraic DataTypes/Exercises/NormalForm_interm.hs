@@ -2,11 +2,11 @@ module NormalForm_interm where
 
 
 -- 1. Given the type
-data FlowerType = Gardenia
-        | Daisy
-        | Rose
-        | Lilac
-        deriving Show
+-- data FlowerType = Gardenia
+--         | Daisy
+--         | Rose
+--         | Lilac
+--         deriving Show
 type Gardener = String
 
 -- data Garden = Garden Gardener FlowerType
@@ -14,7 +14,8 @@ type Gardener = String
 
 
 -- What is the normal form of Garden?
-data Garden =  Gardener Gardenia
-              | Gardener Daisy
-              | Gardener Rose
-              | Gardener Lilac
+data GardenNF = Gardenia Gardener
+                | Daisy Gardener
+                | Rose Gardener
+                | Lilac Gardener
+                deriving Show

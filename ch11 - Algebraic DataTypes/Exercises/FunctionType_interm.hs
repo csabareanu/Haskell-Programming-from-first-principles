@@ -74,8 +74,10 @@ data Quad =
 -- 2*2*2 = 8
 
 -- 5. gTwo :: Bool -> Bool -> Bool
+-- 2 ^ 2 ^ 2 = 16
 -- 2 ^ (2*2) = 2^4 = 16
 
 -- 6. Hint: 5 digit number
 -- fTwo :: Bool -> Quad -> Quad
+-- 2 ^ 4 ^ 4 = 2 ^ 16 = 65.536
 -- 4^(4*2) = 65536
